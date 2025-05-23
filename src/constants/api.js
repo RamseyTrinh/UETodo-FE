@@ -10,3 +10,11 @@ export const AUTH_API = {
 export const USER_API = {
     GET_CURRENT_USER: '/user/me'
 }
+
+export const TASK_API = {
+    GET_TASKS: '/task',
+    GET_TASK: (taskId) => `/task/${taskId}`,
+    CREATE_TASK: '/task',
+    UPDATE_TASK: (taskId) => `/task/${taskId}`,
+    DELETE_TASK: (taskId) => `/task/${taskId}`,
+}

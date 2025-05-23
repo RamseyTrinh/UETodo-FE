@@ -2,6 +2,7 @@ import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box, Container } from '@mui/material';
 import { styled } from '@mui/system';
 import { Link } from 'react-router-dom';
+import ThemeToggleButton from '@/components/ThemeToggleButton';
 
 const HeroSection = styled('div')(({ theme }) => ({
   background: 'linear-gradient(135deg, #121e13, #0c0f0c)',
@@ -27,13 +28,14 @@ const Home = () => {
           <Typography variant="h6" sx={{ fontWeight: 'bold' }} component={Link} to="/">
             UEToDo Task
           </Typography>
-          <Box>
+          <Box mr={4}>
           <Button color="inherit">Product</Button>
           <Button color="inherit">Solutions</Button>
           <Button color="inherit">Support</Button>
           <Button color="inherit">Pricing</Button>
           <Button color="inherit">About Us</Button>
           <StyledButton variant="contained" component={Link} to="/login">Try Now</StyledButton>
+          <ThemeToggleButton />
           </Box>
         </Toolbar>
       </AppBar>
