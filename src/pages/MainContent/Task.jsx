@@ -17,7 +17,6 @@ import {
 import AddIcon from '@mui/icons-material/Add'
 import SearchIcon from '@mui/icons-material/Search'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import GridViewIcon from '@mui/icons-material/GridView'
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
@@ -32,7 +31,7 @@ const initialTasks = [
         name: 'Hai dòn',
         list: 'Default',
         priority: 'Ảo ma',
-        owner: 'hoa***@gmail.c',
+        owner: 'guest',
         dueTime: '-1d,03h',
         status: false,
     },
@@ -41,7 +40,7 @@ const initialTasks = [
         name: 'abe',
         list: 'Default',
         priority: 'Medium',
-        owner: 'hoa***@gmail.c',
+        owner: 'guest',
         dueTime: 'Today',
         status: false,
     },
@@ -50,7 +49,7 @@ const initialTasks = [
         name: 'abc',
         list: 'Default',
         priority: 'Low',
-        owner: 'hoa***@gmail.c',
+        owner: 'guest',
         dueTime: 'Yesterday',
         status: false,
     },
@@ -118,20 +117,14 @@ const Task = () => {
                 justifyContent: 'center',
             }}
         >
-            {/* Sidebar - Removed */}
-
-            {/* Main content */}
             <Box
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    p: 3,
                     bgcolor: theme.palette.background.default,
-                    maxWidth: '1200px',
                     width: '100%',
                 }}
             >
-                {/* Top Toolbar/Header for Main Content */}
                 <Toolbar
                     sx={{
                         display: 'flex',
@@ -188,24 +181,14 @@ const Task = () => {
                     </Box>
                 </Toolbar>
 
-                <Typography
-                    variant="body2"
-                    sx={{ color: theme.palette.text.secondary, mb: 3 }}
-                >
-                    The system automatically creates a project upon
-                    registration, you can delete it freely.
-                </Typography>
-
-                {/* Task List */}
                 <Card
                     sx={{
                         bgcolor: theme.palette.background.paper,
-                        borderRadius: theme.shape.borderRadius,
+                        borderRadius: 2,
                         boxShadow: theme.shadows[1],
                     }}
                 >
                     <CardContent sx={{ p: 0 }}>
-                        {/* Table Header */}
                         <Box
                             sx={{
                                 display: 'flex',
@@ -350,9 +333,8 @@ const Task = () => {
                                                     }}
                                                 >
                                                     {task.priority === 'Urgent'
-                                                        ? 'ảo ma'
+                                                        ? 'Default'
                                                         : task.priority}{' '}
-                                                    {/* Example for Chinese text */}
                                                 </Button>
                                             </Box>
                                             <Box
