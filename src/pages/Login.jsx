@@ -1,40 +1,63 @@
-import {useState} from 'react';
-import {Alert, Box, Button, Card, IconButton, InputAdornment, TextField, Typography, useTheme} from '@mui/material'; // Import useTheme
-import {LockOutlined, PersonOutline, Visibility, VisibilityOff} from '@mui/icons-material';
-import {PATHS} from '@/routers/path';
-import {useNavigate} from 'react-router-dom';
-import {useDispatch} from "react-redux";
-import {getCurrentUserAction, loginAction} from "@/stores/authAction.js";
+import { useState } from 'react'
+import {
+    Alert,
+    Box,
+    Button,
+    Card,
+    IconButton,
+    InputAdornment,
+    TextField,
+    Typography,
+    useTheme,
+} from '@mui/material' // Import useTheme
+import {
+    LockOutlined,
+    PersonOutline,
+    Visibility,
+    VisibilityOff,
+} from '@mui/icons-material'
+import { PATHS } from '@/routers/path'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { getCurrentUserAction, loginAction } from '@/stores/authAction.js'
 
 const LoginPage = () => {
-    const [passwordVisible, setPasswordVisible] = useState(false);
-    const [submitLoading, setSubmitLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [values, setValues] = useState({});
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const theme = useTheme();
+    const theme = useTheme()
+    const [passwordVisible, setPasswordVisible] = useState(false)
+    const [submitLoading, setSubmitLoading] = useState(false)
+    const [error, setError] = useState('')
+    const [values, setValues] = useState({})
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const handleChange = (prop) => (event) => {
-        setValues({...values, [prop]: event.target.value});
-    };
+        setValues({ ...values, [prop]: event.target.value })
+    }
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
-        setSubmitLoading(true);
-        try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+        event.preventDefault()
+        setSubmitLoading(true)
 
-            dispatch(loginAction(values));
-            dispatch(getCurrentUserAction());
-            navigate(PATHS.dashboard);
+        try {
+            const response = await dispatch(loginAction(values))
+
+            if (loginAction.rejected.match(response)) {
+                setError(
+                    response.payload?.message ||
+                        'Login failed. Please check your credentials.'
+                )
+                return
+            }
+
+            // Nếu login thành công
+            navigate(PATHS.dashboard)
         } catch (e) {
-            console.error(e);
-            setError(e.message || "Login failed. Please check your credentials.");
+            console.log('Unexpected error:', e)
+            setError('Something went wrong.')
         } finally {
-            setSubmitLoading(false);
+            setSubmitLoading(false)
         }
-    };
+    }
 
     return (
         <Box
@@ -59,15 +82,28 @@ const LoginPage = () => {
                     boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.5)', // Box shadow có thể giữ nguyên hoặc điều chỉnh tùy theme
                 }}
             >
-
-                <Typography variant="h5" sx={{ mb: 1, color: theme.palette.text.primary, fontWeight: 'bold' }}>
+                <Typography
+                    variant="h5"
+                    sx={{
+                        mb: 1,
+                        color: theme.palette.text.primary,
+                        fontWeight: 'bold',
+                    }}
+                >
                     Welcome to UEToDo Task
                 </Typography>
-                <Typography variant="body2" sx={{ mb: 3, color: theme.palette.text.secondary }}>
+                <Typography
+                    variant="body2"
+                    sx={{ mb: 3, color: theme.palette.text.secondary }}
+                >
                     Enter your credentials to access your account.
                 </Typography>
 
-                {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+                {error && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                        {error}
+                    </Alert>
+                )}
 
                 <form onSubmit={handleSubmit}>
                     <TextField
@@ -80,11 +116,14 @@ const LoginPage = () => {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <PersonOutline sx={{ color: theme.palette.text.secondary }} />
+                                    <PersonOutline
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    />
                                 </InputAdornment>
                             ),
                         }}
-                        
                         sx={{
                             mb: 2,
                         }}
@@ -101,25 +140,39 @@ const LoginPage = () => {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <LockOutlined sx={{ color: theme.palette.text.secondary }} />
+                                    <LockOutlined
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    />
                                 </InputAdornment>
                             ),
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <IconButton
-                                        onClick={() => setPasswordVisible(!passwordVisible)}
+                                        onClick={() =>
+                                            setPasswordVisible(!passwordVisible)
+                                        }
                                         edge="end"
-                                        sx={{ color: theme.palette.text.secondary }}
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
                                     >
-                                        {passwordVisible ? <Visibility /> : <VisibilityOff />}
+                                        {passwordVisible ? (
+                                            <Visibility />
+                                        ) : (
+                                            <VisibilityOff />
+                                        )}
                                     </IconButton>
                                 </InputAdornment>
                             ),
                             // Không cần style: { color: '#FFFFFF' } ở đây nữa
                         }}
-                        InputLabelProps={{
-                            // Không cần style: { color: '#B0B0B0' } ở đây nữa
-                        }}
+                        InputLabelProps={
+                            {
+                                // Không cần style: { color: '#B0B0B0' } ở đây nữa
+                            }
+                        }
                         sx={{
                             mb: 3,
                             // Loại bỏ các override về màu border, input text, label text
@@ -159,10 +212,13 @@ const LoginPage = () => {
                         mt: 2,
                     }}
                 >
-                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                    <Typography
+                        variant="body2"
+                        sx={{ color: theme.palette.text.secondary }}
+                    >
                         Don't have an account yet?{' '}
-                        <Button
-                            href={PATHS.signup}
+                        <Link
+                            to="/sign-up"
                             size="small"
                             variant="text"
                             sx={{
@@ -177,14 +233,14 @@ const LoginPage = () => {
                             }}
                         >
                             Register account
-                        </Button>
+                        </Link>
                     </Typography>
                 </Box>
                 {/* Forgot password link outside the card, at the bottom of the page */}
                 <Box sx={{ mt: 3, textAlign: 'center' }}>
                     <Typography variant="body2">
-                        <Button
-                            href="/reset-password" // Replace with your actual reset password path
+                        <Link
+                            to="/reset-password"
                             size="small"
                             variant="text"
                             sx={{
@@ -199,12 +255,12 @@ const LoginPage = () => {
                             }}
                         >
                             Forgot password? Reset Password
-                        </Button>
+                        </Link>
                     </Typography>
                 </Box>
             </Card>
         </Box>
-    );
-};
+    )
+}
 
-export default LoginPage;
+export default LoginPage

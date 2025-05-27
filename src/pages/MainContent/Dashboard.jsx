@@ -5,7 +5,6 @@ import {
     Grid,
     Paper,
     Button,
-    Divider,
     Table,
     TableBody,
     TableCell,
@@ -16,6 +15,9 @@ import {
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { BarChart, LineChart } from '@mui/x-charts'
 import { useNavigate } from 'react-router-dom'
+import { getCurrentUserAction } from '@/stores/authAction.js'
+import { useDispatch } from 'react-redux'
+
 
 function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein }
@@ -30,6 +32,7 @@ const rows = [
 ]
 
 const Dashboard = () => {
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     const [currentUser, setCurrentUser] = React.useState({})
     const [isLoading, setIsLoading] = React.useState(true)
@@ -59,12 +62,9 @@ const Dashboard = () => {
 
     const fetchCurrentUser = async () => {
         try {
-            const response = await getCurrentUser()
-            if (!response.ok) {
-                throw new Error('Network response was not ok')
-            }
-            const data = await response.json()
-            setCurrentUser(data)
+            const response = await dispatch(getCurrentUserAction())
+            console.log('Current User:', response)
+            setCurrentUser(response?.payload?.user)
         } catch (error) {
             console.error('Error fetching current user:', error)
         } finally {

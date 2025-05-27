@@ -244,6 +244,9 @@ const Calendar = () => {
                         background-color: ${theme.palette.action.hover};
                         cursor: pointer;
                     }
+                    .fc .fc-col-header-cell-cushion {
+                        color: ${theme.palette.text.primary} !important;
+                    }
                 `}
                 </style>
             </Box>

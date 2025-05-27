@@ -1,56 +1,88 @@
-import React, { useState } from 'react';
-import { Alert, Box, Button, Card, IconButton, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
-import { LockOutlined, PersonOutline, Visibility, VisibilityOff, EmailOutlined } from '@mui/icons-material';
-import { PATHS } from '@/routers/path';
-import { register } from '@/services/auth'; // Assuming this service is correctly implemented - No need to import, not used
+import React, { useState } from 'react'
+import {
+    Alert,
+    Box,
+    Button,
+    Card,
+    IconButton,
+    InputAdornment,
+    TextField,
+    Typography,
+    useTheme,
+} from '@mui/material'
+import {
+    Radio,
+    RadioGroup,
+    FormControl,
+    FormControlLabel,
+    FormLabel,
+} from '@mui/material'
+
+import {
+    LockOutlined,
+    PersonOutline,
+    Visibility,
+    VisibilityOff,
+    EmailOutlined,
+} from '@mui/icons-material'
+import { PATHS } from '@/routers/path'
+import { register } from '@/services/auth'
+import { Link } from 'react-router-dom'
+import { Phone as PhoneIcon } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
 
 const RegisterPage = () => {
-    const [passwordVisible, setPasswordVisible] = useState(false);
-    const [submitLoading, setSubmitLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    const navigate = useNavigate()
+    const [passwordVisible, setPasswordVisible] = useState(false)
+    const [submitLoading, setSubmitLoading] = useState(false)
+    const [error, setError] = useState('')
+    const [success, setSuccess] = useState('')
     const [values, setValues] = useState({
-        username: '',
+        name: '',
         email: '',
         password: '',
         confirmPassword: '',
-    });
-    const theme = useTheme(); // Use the useTheme hook
+        gender: '',
+        dob: '',
+        phone_number: '',
+    })
+
+    const theme = useTheme() // Use the useTheme hook
 
     const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
-    };
+        setValues({ ...values, [prop]: event.target.value })
+    }
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
-        setError('');
-        setSuccess('');
-        setSubmitLoading(true);
+        event.preventDefault()
+        setError('')
+        setSuccess('')
+        setSubmitLoading(true)
 
         if (values.password !== values.confirmPassword) {
-            setError("Passwords do not match.");
-            setSubmitLoading(false);
-            return;
+            setError('Passwords do not match.')
+            setSubmitLoading(false)
+            return
         }
 
         try {
-            const response = await register(values);
+            const response = await register(values)
             if (response.status === 200) {
-                console.log("Registration successful with:", values);
+                console.log('Registration successful with:', values)
 
-                setSuccess('Registration successful! Redirecting to login...');
+                setSuccess('Registration successful! Redirecting to login...')
                 setTimeout(() => {
-                    window.location.href = PATHS.login; // Using window.location.href for full page reload as per original
-                }, 2000);
+                    navigate(PATHS.login) 
+                }, 2000)
             }
-            
         } catch (e) {
-            console.error(e);
-            setError(e.message || "Registration failed. Please try again.");
+            console.error('Registration error:', e)
+            console.error(e)
+            setError(e.response.data.message || 'Registration failed. Please try again.')
         } finally {
-            setSubmitLoading(false);
+            setSubmitLoading(false)
         }
-    };
+    }
 
     return (
         <Box
@@ -73,28 +105,50 @@ const RegisterPage = () => {
                     boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.5)',
                 }}
             >
-                <Typography variant="h5" sx={{ mb: 1, color: theme.palette.text.primary, fontWeight: 'bold' }}>
+                <Typography
+                    variant="h5"
+                    sx={{
+                        mb: 1,
+                        color: theme.palette.text.primary,
+                        fontWeight: 'bold',
+                    }}
+                >
                     Create an account
                 </Typography>
-                <Typography variant="body2" sx={{ mb: 3, color: theme.palette.text.secondary }}>
+                <Typography
+                    variant="body2"
+                    sx={{ mb: 3, color: theme.palette.text.secondary }}
+                >
                     Fill in your details to create a new account.
                 </Typography>
 
-                {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-                {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+                {error && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                        {error}
+                    </Alert>
+                )}
+                {success && (
+                    <Alert severity="success" sx={{ mb: 2 }}>
+                        {success}
+                    </Alert>
+                )}
 
                 <form onSubmit={handleSubmit}>
                     <TextField
                         fullWidth
-                        label="Username"
-                        placeholder='Enter your username'
+                        label="Name"
+                        placeholder="Enter your name"
                         variant="outlined"
                         value={values.username}
-                        onChange={handleChange('username')}
+                        onChange={handleChange('name')}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <PersonOutline sx={{ color: theme.palette.text.secondary }} />
+                                    <PersonOutline
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    />
                                 </InputAdornment>
                             ),
                         }}
@@ -114,7 +168,12 @@ const RegisterPage = () => {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <EmailOutlined sx={{ color: theme.palette.text.secondary }} />{/* Changed to EmailOutlined */}
+                                    <EmailOutlined
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    />
+                                    {/* Changed to EmailOutlined */}
                                 </InputAdornment>
                             ),
                         }}
@@ -125,6 +184,88 @@ const RegisterPage = () => {
                         required
                         type="email"
                     />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            mb: 2,
+                        }}
+                    >
+                        <FormLabel
+                            component="legend"
+                            sx={{
+                                minWidth: 80, // Đặt độ rộng tối thiểu cho label
+                                mr: 2,
+                            }}
+                        >
+                            Gender
+                        </FormLabel>
+                        <RadioGroup
+                            row
+                            value={values.gender}
+                            onChange={handleChange('gender')}
+                            name="gender"
+                        >
+                            <FormControlLabel
+                                value="male"
+                                control={<Radio />}
+                                label="Male"
+                            />
+                            <FormControlLabel
+                                value="female"
+                                control={<Radio />}
+                                label="Female"
+                            />
+                        </RadioGroup>
+                    </Box>
+
+                    <TextField
+                        fullWidth
+                        label="Date of Birth"
+                        placeholder="dd/mm/yyyy"
+                        variant="outlined"
+                        value={values.dob}
+                        onChange={handleChange('dob')}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <PersonOutline
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    />
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{ mb: 2 }}
+                        required
+                        type="date"
+                        InputLabelProps={{ shrink: true }}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Phone Number"
+                        placeholder="Enter your phone number"
+                        variant="outlined"
+                        value={values.phone}
+                        onChange={handleChange('phone_number')}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <PhoneIcon
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    />
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{ mb: 2 }}
+                        required
+                        type="tel"
+                    />
+
                     <TextField
                         fullWidth
                         label="Password"
@@ -136,17 +277,29 @@ const RegisterPage = () => {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <LockOutlined sx={{ color: theme.palette.text.secondary }} />
+                                    <LockOutlined
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    />
                                 </InputAdornment>
                             ),
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <IconButton
-                                        onClick={() => setPasswordVisible(!passwordVisible)}
+                                        onClick={() =>
+                                            setPasswordVisible(!passwordVisible)
+                                        }
                                         edge="end"
-                                        sx={{ color: theme.palette.text.secondary }}
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
                                     >
-                                        {passwordVisible ? <Visibility /> : <VisibilityOff />}
+                                        {passwordVisible ? (
+                                            <Visibility />
+                                        ) : (
+                                            <VisibilityOff />
+                                        )}
                                     </IconButton>
                                 </InputAdornment>
                             ),
@@ -168,17 +321,29 @@ const RegisterPage = () => {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <LockOutlined sx={{ color: theme.palette.text.secondary }} />
+                                    <LockOutlined
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
+                                    />
                                 </InputAdornment>
                             ),
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <IconButton
-                                        onClick={() => setPasswordVisible(!passwordVisible)}
+                                        onClick={() =>
+                                            setPasswordVisible(!passwordVisible)
+                                        }
                                         edge="end"
-                                        sx={{ color: theme.palette.text.secondary }}
+                                        sx={{
+                                            color: theme.palette.text.secondary,
+                                        }}
                                     >
-                                        {passwordVisible ? <Visibility /> : <VisibilityOff />}
+                                        {passwordVisible ? (
+                                            <Visibility />
+                                        ) : (
+                                            <VisibilityOff />
+                                        )}
                                     </IconButton>
                                 </InputAdornment>
                             ),
@@ -219,10 +384,13 @@ const RegisterPage = () => {
                         mt: 2,
                     }}
                 >
-                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                    <Typography
+                        variant="body2"
+                        sx={{ color: theme.palette.text.secondary }}
+                    >
                         Already have an account?{' '}
-                        <Button
-                            href={PATHS.login}
+                        <Link
+                            to={PATHS.login}
                             size="small"
                             variant="text"
                             sx={{
@@ -237,12 +405,12 @@ const RegisterPage = () => {
                             }}
                         >
                             Login
-                        </Button>
+                        </Link>
                     </Typography>
                 </Box>
             </Card>
         </Box>
-    );
-};
+    )
+}
 
-export default RegisterPage;
+export default RegisterPage

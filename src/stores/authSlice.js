@@ -7,7 +7,7 @@ const authSlice = createSlice({
     name: 'auth',
     initialState: {
         isAuthenticated: getLocalStorage(LOCAL_STORAGE_KEYS.IS_LOGIN) || false,
-        user: JSON.parse(getLocalStorage(LOCAL_STORAGE_KEYS.INFO)) || null,
+        user: getLocalStorage(LOCAL_STORAGE_KEYS.INFO) ?  JSON.parse(getLocalStorage(LOCAL_STORAGE_KEYS.INFO)) : null,
     },
     reducers: {
         logout: (state) => {
@@ -21,7 +21,10 @@ const authSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(loginAction.fulfilled, (state, action) => {
-                putLocalStorage(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN, action.payload.data.accessToken)
+                state.user = action.payload.data.user
+            })
+            .addCase(loginAction.rejected, (state, action) => {
+                state.error = action.payload?.message || "Login failed";
             })
             .addCase(getCurrentUserAction.fulfilled, (state, action) => {
                 state.isAuthenticated = true

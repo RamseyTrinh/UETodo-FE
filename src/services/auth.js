@@ -5,7 +5,7 @@ import {LOCAL_STORAGE_KEYS} from "@/constants/localStorageKey.js";
 
 export const login = async (payload) => {
     const response = await http.post(AUTH_API.LOGIN, payload)
-    putLocalStorage(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN, response.data.data.accessToken)
+    putLocalStorage(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN, response.data.access_token)
     return response;
 };
 
