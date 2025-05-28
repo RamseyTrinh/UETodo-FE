@@ -10,13 +10,7 @@ import {
     Typography,
     useTheme,
 } from '@mui/material'
-import {
-    Radio,
-    RadioGroup,
-    FormControl,
-    FormControlLabel,
-    FormLabel,
-} from '@mui/material'
+import { Radio, RadioGroup, FormControlLabel, FormLabel } from '@mui/material'
 
 import {
     LockOutlined,
@@ -72,13 +66,16 @@ const RegisterPage = () => {
 
                 setSuccess('Registration successful! Redirecting to login...')
                 setTimeout(() => {
-                    navigate(PATHS.login) 
+                    navigate(PATHS.login)
                 }, 2000)
             }
         } catch (e) {
             console.error('Registration error:', e)
             console.error(e)
-            setError(e.response.data.message || 'Registration failed. Please try again.')
+            setError(
+                e.response.data.message ||
+                    'Registration failed. Please try again.'
+            )
         } finally {
             setSubmitLoading(false)
         }

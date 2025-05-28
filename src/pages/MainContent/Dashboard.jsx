@@ -63,7 +63,6 @@ const Dashboard = () => {
     const fetchCurrentUser = async () => {
         try {
             const response = await dispatch(getCurrentUserAction())
-            console.log('Current User:', response)
             setCurrentUser(response?.payload?.user)
         } catch (error) {
             console.error('Error fetching current user:', error)
@@ -75,10 +74,11 @@ const Dashboard = () => {
         fetchCurrentUser()
         getTasks()
     }, [])
+
     return (
         <Box sx={{ flexGrow: 1, p: 2 }}>
             <Typography variant="h5" component="h1" gutterBottom sx={{ mb: 3 }}>
-                Welcome Back, {currentUser.name || 'Guest'}!
+                Welcome Back, {currentUser?.name || 'Guest'}!
             </Typography>
 
             <Paper
