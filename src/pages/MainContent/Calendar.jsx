@@ -3,34 +3,75 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import AskTask from '../../components/AskTask'
-import { useTheme } from '@mui/material/styles'
-import { Box } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Box, useTheme, Alert, Snackbar } from '@mui/material'
 
+import { createTask, getTasksByUserId, updateTask } from '@/services/task'
 
 const Calendar = () => {
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedDate, setSelectedDate] = useState('')
     const [events, setEvents] = useState([])
-
+    const [alert, setAlert] = useState({})
+    
     const theme = useTheme()
 
     const handleDateClick = (info) => {
         setSelectedDate(info.dateStr)
+        console.log('Selected date:', info.dateStr)
         setModalOpen(true)
     }
 
-    const handleCreateTask = (newEvent) => {
-        setEvents([...events, newEvent])
+    const handleCreateTask = async (task) => {
+        try {
+            const response = await createTask(task)
+            if (response?.success) {
+                setAlert({
+                    mssg: `Task created successfully!`,
+                    type: 'success',
+                })
+                setModalOpen(false)
+                handleListTask()
+            }
+        } catch (error) {
+            setAlert({ mssg: 'Failed to process task.', type: 'error' })
+            console.error('Error saving task:', error)
+        }
     }
 
+    const handleListTask = async () => {
+        try {
+            const userInfo = JSON.parse(localStorage.getItem('INFO'))
+            const userId = userInfo?.user?.id
+            const response = await getTasksByUserId(userId, 1, 1000)
+
+            const tasksData = response?.data || []
+
+            const calendarEvents = tasksData.map((task) => ({
+                id: task.id,
+                title:
+                    task.status === true
+                        ? `[Completed] ${task.name}`
+                        : task.name,
+                date: task.start_date,
+            }))
+
+            setEvents(calendarEvents)
+        } catch (error) {
+            console.error('Error fetching tasks:', error)
+        }
+    }
+
+    React.useEffect(() => {
+        handleListTask()
+    }, [])
+
     return (
+        <>
             <Box
                 sx={{
                     backgroundColor: theme.palette.background.default,
                     color: theme.palette.text.primary,
-                    minHeight: '100vh',
-                    padding: 1
+                    padding: 1,
                 }}
             >
                 <FullCalendar
@@ -46,7 +87,7 @@ const Calendar = () => {
                         center: 'title',
                         right: 'dayGridMonth,dayGridWeek,dayGridDay',
                     }}
-                    dayMaxEvents={3}
+                    dayMaxEvents={10}
                     fixedWeekCount={false}
                     dayCellClassNames={({ date }) => {
                         const classes = ['fc-daycell']
@@ -95,7 +136,7 @@ const Calendar = () => {
                     }}
                     eventContent={({ event }) => {
                         const title = event.title
-                        const isOverdue = title.includes('[Overdue]')
+                        const isOverdue = title.includes('[Completed]')
 
                         return (
                             <div
@@ -106,7 +147,7 @@ const Calendar = () => {
                                         ? 'transparent'
                                         : theme.palette.primary.dark,
                                     color: isOverdue
-                                        ? theme.palette.error.main
+                                        ? theme.palette.success.main
                                         : theme.palette.primary.contrastText,
                                     borderRadius: 6,
                                     padding: '2px 6px',
@@ -122,7 +163,7 @@ const Calendar = () => {
                                             height: 6,
                                             borderRadius: '50%',
                                             backgroundColor:
-                                                theme.palette.error.main,
+                                                theme.palette.success.main,
                                             display: 'inline-block',
                                         }}
                                     />
@@ -137,8 +178,8 @@ const Calendar = () => {
                 <AskTask
                     open={modalOpen}
                     onClose={() => setModalOpen(false)}
-                    selectedDate={selectedDate}
                     onCreate={handleCreateTask}
+                    selectedDate={selectedDate}
                 />
 
                 <style>
@@ -202,7 +243,7 @@ const Calendar = () => {
                     }
 
                     .fc-daygrid-day.fc-day-today {
-                        background-color: transparent !important; /* Keep your existing logic for today's background */
+                        background-color: transparent !important;
                     }
 
                     .fc-daygrid-day.fc-day-other .fc-daygrid-day-number {
@@ -250,6 +291,22 @@ const Calendar = () => {
                 `}
                 </style>
             </Box>
+            <Snackbar
+                open={Boolean(alert?.mssg)}
+                autoHideDuration={3000}
+                onClose={() => setAlert({})}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <Alert
+                    onClose={() => setAlert({})}
+                    severity={alert.type || 'info'}
+                    sx={{ width: '100%' }}
+                    variant="filled"
+                >
+                    {alert.mssg}
+                </Alert>
+            </Snackbar>
+        </>
     )
 }
 

@@ -15,8 +15,7 @@ import {
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { BarChart, LineChart } from '@mui/x-charts'
 import { useNavigate } from 'react-router-dom'
-import { getCurrentUserAction } from '@/stores/authAction.js'
-import { useDispatch } from 'react-redux'
+import { getDashboardTasks } from '@/services/task'
 
 
 function createData(name, calories, fat, carbs, protein) {
@@ -32,46 +31,26 @@ const rows = [
 ]
 
 const Dashboard = () => {
-    const dispatch = useDispatch()
     const navigate = useNavigate()
     const [currentUser, setCurrentUser] = React.useState({})
-    const [isLoading, setIsLoading] = React.useState(true)
-    const [tasks, setTasks] = React.useState([])
-    const [todayTasks, setTodayTasks] = React.useState([])
-    const [overdueTasks, setOverdueTasks] = React.useState([])
-    const [completedTasks, setCompletedTasks] = React.useState([])
-    const [remainingTasks, setRemainingTasks] = React.useState([])
+    const [dashboardTasks, setDashboardTasks] = React.useState([])
 
     const getTasks = async () => {
         try {
-            const allTask = await fetch('/api/tasks')
-            const todayTask = await fetch('/api/tasks/today')
-            const overdueTask = await fetch('/api/tasks/overdue')
-            const completedTask = await fetch('/api/tasks/completed')
-            const remainingTasks = await fetch('/api/tasks/remaining')
+            const userInfo = JSON.parse(localStorage.getItem('INFO'))
+            setCurrentUser(userInfo?.user || {})
 
-            setTasks(allTask)
-            setTodayTasks(todayTask)
-            setOverdueTasks(overdueTask)
-            setCompletedTasks(completedTask)
-            setRemainingTasks(remainingTasks)
+            const userId = userInfo?.user?.id
+            const response = await getDashboardTasks(userId)
+
+            setDashboardTasks(response?.data || {})
+
         } catch (error) {
             console.error('Error fetching tasks:', error)
         }
     }
 
-    const fetchCurrentUser = async () => {
-        try {
-            const response = await dispatch(getCurrentUserAction())
-            setCurrentUser(response?.payload?.user)
-        } catch (error) {
-            console.error('Error fetching current user:', error)
-        } finally {
-            setIsLoading(false)
-        }
-    }
     React.useEffect(() => {
-        fetchCurrentUser()
         getTasks()
     }, [])
 
@@ -93,14 +72,14 @@ const Dashboard = () => {
             >
                 <Box>
                     <Typography variant="h5" color="text.secondary">
-                        Total today Tasks
+                        Total Tasks
                     </Typography>
                     <Typography
                         variant="h3"
                         component="p"
                         sx={{ fontWeight: 'bold', mt: 1 }}
                     >
-                        {todayTasks.length || 0}
+                        {dashboardTasks?.total_task || 0}
                     </Typography>
                 </Box>
                 <Button
@@ -122,7 +101,7 @@ const Dashboard = () => {
                             Total Tasks
                         </Typography>
                         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                            {tasks.length || 15}
+                            {dashboardTasks.total_task || 15}
                         </Typography>
                     </Paper>
                 </Grid>
@@ -132,7 +111,7 @@ const Dashboard = () => {
                             Completed Tasks
                         </Typography>
                         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                            {completedTasks.length || 10}
+                            {dashboardTasks.total_completed_tasks || 10}
                         </Typography>
                     </Paper>
                 </Grid>
@@ -143,7 +122,7 @@ const Dashboard = () => {
                             Tasks Remaining
                         </Typography>
                         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                            {remainingTasks.length || 5}
+                            {dashboardTasks.total_remaining_tasks || 5}
                         </Typography>
                     </Paper>
                 </Grid>
@@ -154,7 +133,7 @@ const Dashboard = () => {
                             Tasks Overdue
                         </Typography>
                         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                            {overdueTasks.length || 3}
+                            {dashboardTasks.total_overdue_tasks || 0}
                         </Typography>
                     </Paper>
                 </Grid>

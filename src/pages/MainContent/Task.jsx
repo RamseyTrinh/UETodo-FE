@@ -22,15 +22,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import AskTask from '@/components/AskTask'
 import TaskRow from '@/components/TaskRow'
-import { createTask, getTasksByUserId, updateTask, deleteTask } from '@/services/task'
+import { createTask, getTasksByUserId, updateTask } from '@/services/task'
 
 const Task = () => {
     const theme = useTheme()
     const [expandedTasks, setExpandedTasks] = useState(true)
-    const [expandedUnfinished, setExpandedUnfinished] = useState(true)
     const [expandedCompleted, setExpandedCompleted] = useState(true)
     const [showDialog, setShowDialog] = useState(false)
-    const [editTask, setEditTask] = useState(null)
     const [tasks, setTasks] = useState([])
     const [alert, setAlert] = useState({})
 
@@ -48,26 +46,12 @@ const Task = () => {
         }
     }
 
-    const handleUpdateTask = async (task) => {
-        try {
-            const isEdit = Boolean(task.id)
-            const response = await updateTask(task.id, task)
-            if (response?.success) {
-                setAlert({ mssg: `Task updated successfully!`, type: 'success' })
-                setShowDialog(false)
-                handleListTask()
-            }
-        } catch (error) {
-            setAlert({ mssg: 'Failed to process task.', type: 'error' })
-            console.error('Error saving task:', error)
-        }
-    }
-
     const handleListTask = async () => {
         try {
             const userInfo = JSON.parse(localStorage.getItem('INFO'))
             const userId = userInfo?.user?.id
-            const response = await getTasksByUserId(userId, 1, 10)
+            const response = await getTasksByUserId(userId, 1, 1000)
+            console.log('Fetched tasks:', response)
             setTasks(response?.data || [])
         } catch (error) {
             console.error('Error fetching tasks:', error)
@@ -86,16 +70,6 @@ const Task = () => {
             )
         } catch (error) {
             console.error('Failed to update task status:', error)
-        }
-    }
-
-    const handleDeleteTask = async (id) => {
-        try {
-            await deleteTask(id)
-            setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id))
-            setAlert({ mssg: 'Task deleted successfully!', type: 'success' })
-        } catch (error) {
-            console.error('Error deleting task:', error)
         }
     }
 
@@ -123,10 +97,10 @@ const Task = () => {
                 <Card sx={{ borderRadius: 2, boxShadow: theme.shadows[1] }}>
                     <CardContent sx={{ p: 0 }}>
                         <Box sx={{ display: 'flex', px: 2, py: 1.5, borderBottom: `1px solid ${theme.palette.divider}`, bgcolor: theme.palette.action.hover, fontWeight: 'bold' }}>
-                            <Box sx={{ flexBasis: '20%' }}># Task name</Box>
+                            <Box sx={{ flexBasis: '20%' }}>Task name</Box>
                             <Box sx={{ flexBasis: '30%' }}>Description</Box>
                             <Box sx={{ flexBasis: '15%' }}>Priority</Box>
-                            <Box sx={{ flexBasis: '15%' }}>Create at</Box>
+                            <Box sx={{ flexBasis: '15%' }}>Start date</Box>
                             <Box sx={{ flexBasis: '10%' }}>Due date</Box>
                             <Box sx={{ flexBasis: '10%' }}>Actions</Box>
                         </Box>
@@ -145,8 +119,7 @@ const Task = () => {
                                             key={task.id}
                                             task={task}
                                             onToggleStatus={toggleTaskCompletion}
-                                            onEdit={handleUpdateTask}
-                                            onDelete={() => handleDeleteTask(task.id)}
+                                            onRefresh={handleListTask}
                                         />
                                     ))}
                                     <ListItem sx={{ py: 1, pl: 0 }}>
@@ -155,20 +128,6 @@ const Task = () => {
                                 </List>
                             </Collapse>
                         </Box>
-
-                        {/* <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => setExpandedUnfinished(!expandedUnfinished)}>
-                                {expandedUnfinished ? <ExpandMoreIcon /> : <ChevronRightIcon />}
-                                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', ml: 1 }}>
-                                    Unfinished tasks ({unfinishedTasks.length})
-                                </Typography>
-                            </Box>
-                            <Collapse in={expandedUnfinished}>
-                                {unfinishedTasks.length === 0 && (
-                                    <Typography sx={{ ml: 4, mt: 1 }}>No unfinished tasks.</Typography>
-                                )}
-                            </Collapse>
-                        </Box> */}
 
                         <Box sx={{ p: 2 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => setExpandedCompleted(!expandedCompleted)}>
@@ -203,7 +162,7 @@ const Task = () => {
                 </Alert>
             </Snackbar>
 
-            <AskTask open={showDialog} onClose={() => { setShowDialog(false) }} onCreate={handleCreateTask} />
+            <AskTask open={showDialog} onClose={() => { setShowDialog(false) }} onCreate={handleCreateTask} selectedDate={null}/>
         </Box>
     )
 }

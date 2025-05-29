@@ -36,5 +36,10 @@ export const getTasksByUserId = async (userId, page, per_page) => {
     return response.data
 }
 
+export const getDashboardTasks = async (userId) => {
+    const response = await http.get(TASK_API.GET_DASHBOARD_TASKS(userId))
+    return response.data
+}
+
 
 

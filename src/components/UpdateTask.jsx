@@ -11,16 +11,15 @@ import {
     Alert,
 } from '@mui/material'
 
-const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
+const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
     const [error, setError] = useState(null)
-
     const [task, setTask] = useState({
-        name: '',
-        description: '',
-        priority: 'High',
-        start_date: '',
-        due_date: '',
-        user_id: null,
+        id: editTask?.id || null,
+        name: editTask?.name || '',
+        description: editTask?.description || '',
+        priority: editTask?.priority || 'Low',
+        due_date: editTask?.due_date || '',
+        user_id: editTask?.user_id || null,
     })
 
     useEffect(() => {
@@ -32,12 +31,6 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
                 user_id: userId,
             }))
         }
-        if(selectedDate) {
-            setTask((prev) => ({
-                ...prev,
-                start_date: selectedDate,
-            }))
-        }
     }, [])
 
     const handleChange = (field) => (e) => {
@@ -45,23 +38,6 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
             ...prev,
             [field]: e.target.value,
         }))
-    }
-
-    const handleStartDateChange = (e) => {
-        const value = e.target.value
-
-        if(selectedDate) {
-            if (new Date(value) !== new Date(selectedDate)) {
-                setError('Cannot change start date when a date is selected')
-                return
-            }
-        } else {
-            setTask((prev) => ({
-            ...prev,
-            start_date: value,
-        }))
-        }
-        
     }
 
     const handleDueDateChange = (e) => {
@@ -96,15 +72,15 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
             setError('User ID is missing')
             return
         }
-        console.log('Task to create:', task)
-        onCreate(task)
+
+        onUpdate(task)
         onClose()
     }
 
     return (
         <>
             <Dialog open={open} onClose={onClose}>
-                <DialogTitle>Add New Task</DialogTitle>
+                <DialogTitle>Update Task</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -141,15 +117,6 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
                     </TextField>
                     <TextField
                         margin="dense"
-                        label="Start Date"
-                        type="date"
-                        fullWidth
-                        value={task.start_date || selectedDate || ''}
-                        onChange={handleStartDateChange}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                        margin="dense"
                         label="Due Date"
                         type="date"
                         fullWidth
@@ -160,7 +127,7 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onClose}>Cancel</Button>
-                    <Button onClick={handleSubmit}>Add Task</Button>
+                    <Button onClick={handleSubmit}>Update Task</Button>
                 </DialogActions>
             </Dialog>
 
@@ -178,4 +145,4 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
     )
 }
 
-export default AskTask
+export default UpdateTask

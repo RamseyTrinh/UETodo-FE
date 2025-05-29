@@ -18,4 +18,5 @@ export const TASK_API = {
     UPDATE_TASK: (taskId) => `/task/${taskId}`,
     DELETE_TASK: (taskId) => `/task/${taskId}`,
     GET_TASKS_BY_USER: (userId, page, per_page) => `/task/user/${userId}?page=${page}&per_page=${per_page}`,
+    GET_DASHBOARD_TASKS: (userId) => `/task/dashboard/${userId}`,
 }
