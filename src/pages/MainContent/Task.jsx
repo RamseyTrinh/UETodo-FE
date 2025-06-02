@@ -103,7 +103,9 @@ const Task = () => {
         <Box sx={{ bgcolor: theme.palette.background.default, minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
             <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
                 <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, px: 3 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Personal Project</Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                        {user?.name}'s tasks
+                    </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Button variant="outlined">All ({tasks.length})</Button>
                         <IconButton><SearchIcon /></IconButton>

@@ -128,8 +128,8 @@ const Dashboard = () => {
     }, [currentUser?.id])
 
     return (
-        <Box sx={{ flexGrow: 1, p: 2 }}>
-            <Typography variant="h5" component="h1" gutterBottom sx={{ mb: 3 }}>
+        <Box>
+            <Typography variant="h5" gutterBottom>
                 Welcome Back, {currentUser?.name || 'Guest'}!
             </Typography>
 
@@ -334,39 +334,28 @@ const Dashboard = () => {
                                         <TableCell align="left">
                                             {task.description}
                                         </TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
                                             <Button
                                                 size="small"
                                                 sx={{
                                                     bgcolor:
                                                         task.priority === 'High'
-                                                            ? theme.palette
-                                                                .error.light
-                                                            : task.priority ===
-                                                                'Medium'
-                                                                ? theme.palette
-                                                                    .warning
-                                                                    .light
-                                                                : theme.palette
-                                                                    .info.light,
+                                                            ? theme.palette.error.light
+                                                            : task.priority === 'Medium'
+                                                                ? theme.palette.warning.light
+                                                                : theme.palette.info.light,
                                                     color:
                                                         task.priority === 'High'
-                                                            ? theme.palette
-                                                                .error
-                                                                .contrastText
-                                                            : task.priority ===
-                                                                'Medium'
-                                                                ? theme.palette
-                                                                    .warning
-                                                                    .contrastText
-                                                                : theme.palette
-                                                                    .info
-                                                                    .contrastText,
+                                                            ? theme.palette.error.contrastText
+                                                            : task.priority === 'Medium'
+                                                                ? theme.palette.warning.contrastText
+                                                                : theme.palette.info.contrastText,
                                                     textTransform: 'none',
                                                     borderRadius: 1,
                                                     px: 1,
                                                     py: 0.5,
                                                     fontSize: '0.75rem',
+                                                    fontWeight: 'bold',
                                                 }}
                                             >
                                                 {task.priority}
@@ -410,39 +399,28 @@ const Dashboard = () => {
                                         <TableCell align="left">
                                             {task.description}
                                         </TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
                                             <Button
                                                 size="small"
                                                 sx={{
                                                     bgcolor:
                                                         task.priority === 'High'
-                                                            ? theme.palette
-                                                                .error.light
-                                                            : task.priority ===
-                                                                'Medium'
-                                                                ? theme.palette
-                                                                    .warning
-                                                                    .light
-                                                                : theme.palette
-                                                                    .info.light,
+                                                            ? theme.palette.error.light
+                                                            : task.priority === 'Medium'
+                                                                ? theme.palette.warning.light
+                                                                : theme.palette.info.light,
                                                     color:
                                                         task.priority === 'High'
-                                                            ? theme.palette
-                                                                .error
-                                                                .contrastText
-                                                            : task.priority ===
-                                                                'Medium'
-                                                                ? theme.palette
-                                                                    .warning
-                                                                    .contrastText
-                                                                : theme.palette
-                                                                    .info
-                                                                    .contrastText,
+                                                            ? theme.palette.error.contrastText
+                                                            : task.priority === 'Medium'
+                                                                ? theme.palette.warning.contrastText
+                                                                : theme.palette.info.contrastText,
                                                     textTransform: 'none',
                                                     borderRadius: 1,
                                                     px: 1,
                                                     py: 0.5,
                                                     fontSize: '0.75rem',
+                                                    fontWeight: 'bold',
                                                 }}
                                             >
                                                 {task.priority}

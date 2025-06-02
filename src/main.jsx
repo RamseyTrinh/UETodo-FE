@@ -3,16 +3,19 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
 import { Provider } from 'react-redux';
-import store from './stores'; // Store của Redux
-import { ThemeProvider } from '@/themes/ThemeContext.jsx'; // Import ThemeProvider của bạn
-import { BrowserRouter } from 'react-router-dom'; // Nếu bạn đang dùng react-router-dom
+import store from './stores';
+import { BrowserRouter } from 'react-router-dom';
+import { ThemeProvider } from '@mui/material/styles'
+import theme from '@/themes/theme'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Provider store={store}> {/* Nếu bạn đang dùng Redux */}
+    <Provider store={store}>
+        <ThemeProvider theme={theme}>
         <BrowserRouter> 
           <App />
         </BrowserRouter>
+        </ThemeProvider>
     </Provider>
   </React.StrictMode>,
 );
