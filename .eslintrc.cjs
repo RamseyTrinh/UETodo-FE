@@ -6,7 +6,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:react-hooks/recommended',
-    'plugin:prettier', // 👈 Thêm dòng này
+    'plugin:prettier',
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
@@ -16,9 +16,9 @@ module.exports = {
     'prettier/prettier': [
       'warn',
       {
-        printWidth: 100,
+        printWidth: 140,
         singleQuote: true,
-        trailingComma: 'all',
+        trailingComma: 'none',
         bracketSpacing: true,
         arrowParens: 'avoid',
       },

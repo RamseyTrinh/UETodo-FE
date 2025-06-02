@@ -41,5 +41,20 @@ export const getDashboardTasks = async (userId) => {
     return response.data
 }
 
+export const getBarChartData = async (userId) => {
+    const response = await http.get(TASK_API.GET_BAR_CHART_DATA(userId))
+    return response.data
+}
+
+export const getLineChartData = async (userId) => {
+    const response = await http.get(TASK_API.GET_LINE_CHART_DATA(userId))
+    return response.data
+}
+
+export const getOverviewTasks = async (userId) => {
+    const response = await http.get(TASK_API.GET_OVERVIEW_TASKS(userId))
+    return response.data
+}
+
 
 

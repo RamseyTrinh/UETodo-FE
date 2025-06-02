@@ -6,12 +6,16 @@ import AskTask from '../../components/AskTask'
 import { Box, useTheme, Alert, Snackbar } from '@mui/material'
 
 import { createTask, getTasksByUserId, updateTask } from '@/services/task'
+import { getCurrentUserAction } from '@/stores/authAction.js'
+import { useDispatch } from 'react-redux'
 
 const Calendar = () => {
+    const dispatch = useDispatch()
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedDate, setSelectedDate] = useState('')
     const [events, setEvents] = useState([])
     const [alert, setAlert] = useState({})
+    const [currentUser, setCurrentUser] = useState({})
     
     const theme = useTheme()
 
@@ -40,8 +44,7 @@ const Calendar = () => {
 
     const handleListTask = async () => {
         try {
-            const userInfo = JSON.parse(localStorage.getItem('INFO'))
-            const userId = userInfo?.user?.id
+            const userId = currentUser?.id
             const response = await getTasksByUserId(userId, 1, 1000)
 
             const tasksData = response?.data || []
@@ -61,9 +64,24 @@ const Calendar = () => {
         }
     }
 
+    const handleGetCurrentUser = async () => {
+        try {
+            const userInfo = await dispatch(getCurrentUserAction())
+            setCurrentUser(userInfo?.payload?.user || {})
+        } catch (error) {
+            console.error('Error fetching current user:', error)
+        }
+    }
+
     React.useEffect(() => {
-        handleListTask()
+        handleGetCurrentUser()
     }, [])
+
+    React.useEffect(() => {
+        if (currentUser?.id) {
+            handleListTask()
+        }
+    }, [currentUser?.id])
 
     return (
         <>

@@ -5,11 +5,7 @@ import ThemeLayoutsSideBar from '@/layouts/ThemeLayoutsSideBar';
 import { PATHS } from './path';
 import NotFound from '@/pages/NotFound';
 
-import { ColorModeContext } from '@/components/ThemeToggleButton';
-import { useContext } from 'react';
-
 function AppRoutes() {
-    const { toggleColorMode } = useContext(ColorModeContext);
 
     return useRoutes([
         { path: PATHS.home, element: <Pages.Home /> },
@@ -18,7 +14,7 @@ function AppRoutes() {
 
         {
             path: '/',
-            element: <ThemeLayoutsSideBar toggleColorMode={toggleColorMode} />,
+            element: <ThemeLayoutsSideBar />,
             children: [
                 { path: PATHS.dashboard, element: <Pages.Dashboard /> },
                 { path: PATHS.task, element: <Pages.Task /> },

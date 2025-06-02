@@ -82,13 +82,21 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
     }
 
     const handleSubmit = () => {
+        if (!task.name.trim() || !task.description.trim()) {
+            setError('Name and description are required')
+            return
+        }
+        if (!task.start_date) {
+            setError('Start date is required')
+            return
+        }
         if (!task.due_date) {
             setError('Due date is required')
             return
         }
 
-        if (!task.name.trim() || !task.description.trim()) {
-            setError('Name and description are required')
+        if (new Date(task.start_date) > new Date(task.due_date)) {
+            setError('Start date cannot be after due date')
             return
         }
 
@@ -104,7 +112,7 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
     return (
         <>
             <Dialog open={open} onClose={onClose}>
-                <DialogTitle>Add New Task</DialogTitle>
+                <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>Add New Task</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -159,8 +167,8 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose}>Cancel</Button>
-                    <Button onClick={handleSubmit}>Add Task</Button>
+                    <Button onClick={onClose} color='error'>Cancel</Button>
+                    <Button onClick={handleSubmit} variant='contained'>Add Task</Button>
                 </DialogActions>
             </Dialog>
 

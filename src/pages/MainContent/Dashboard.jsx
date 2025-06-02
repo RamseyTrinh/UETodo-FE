@@ -11,48 +11,121 @@ import {
     TableContainer,
     TableHead,
     TableRow,
+    Tabs,
+    Tab,
+    useTheme,
 } from '@mui/material'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { BarChart, LineChart } from '@mui/x-charts'
 import { useNavigate } from 'react-router-dom'
-import { getDashboardTasks } from '@/services/task'
-
-
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein }
-}
-
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-]
+import {
+    getDashboardTasks,
+    getBarChartData,
+    getLineChartData,
+    getOverviewTasks,
+} from '@/services/task'
+import { useDispatch } from 'react-redux'
+import { getCurrentUserAction } from '@/stores/authAction.js'
 
 const Dashboard = () => {
+    const theme = useTheme()
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+
     const [currentUser, setCurrentUser] = React.useState({})
     const [dashboardTasks, setDashboardTasks] = React.useState([])
+    const [barChartData, setBarChartData] = React.useState({
+        categories: [],
+        overdue: [],
+        completed: [],
+    })
+    const [lineChartData, setLineChartData] = React.useState({
+        days: [],
+        counts: [],
+    })
+    const [tabIndex, setTabIndex] = React.useState(0)
+    const [upcomingTasks, setUpcomingTasks] = React.useState([])
+    const [completedTasks, setCompletedTasks] = React.useState([])
+
+    const handleTabChange = (event, newValue) => {
+        setTabIndex(newValue)
+    }
+
+    const dayLabels = lineChartData.days
 
     const getTasks = async () => {
         try {
-            const userInfo = JSON.parse(localStorage.getItem('INFO'))
-            setCurrentUser(userInfo?.user || {})
-
-            const userId = userInfo?.user?.id
+            const userId = currentUser?.id
             const response = await getDashboardTasks(userId)
 
             setDashboardTasks(response?.data || {})
-
         } catch (error) {
             console.error('Error fetching tasks:', error)
         }
     }
 
+    const handleGetBarChartData = async () => {
+        try {
+            const userId = currentUser?.id
+            const response = await getBarChartData(userId)
+            const data = response?.data || {}
+            setBarChartData({
+                categories: data.categories,
+                overdue: data.overdue,
+                completed: data.completed,
+            })
+        } catch (error) {
+            console.error('Error fetching bar chart data:', error)
+        }
+    }
+
+    const handleGetLineChartData = async () => {
+        try {
+            const userId = currentUser?.id
+            const response = await getLineChartData(userId)
+            const data = response?.data || {}
+            setLineChartData({
+                days: data.days,
+                counts: data.counts,
+            })
+        } catch (error) {
+            console.error('Error fetching line chart data:', error)
+        }
+    }
+
+    const handleGetOverviewTasks = async () => {
+        try {
+            const userId = currentUser?.id
+            const response = await getOverviewTasks(userId)
+            const data = response?.data || {}
+            setUpcomingTasks(data.upcoming || [])
+            setCompletedTasks(data.completed || [])
+        } catch (error) {
+            console.error('Error fetching overview tasks:', error)
+        }
+    }
+
+    const handleGetCurrentUser = async () => {
+        try {
+            const userInfo = await dispatch(getCurrentUserAction())
+            setCurrentUser(userInfo?.payload?.user || {})
+        } catch (error) {
+            console.error('Error fetching current user:', error)
+        }
+    }
+
     React.useEffect(() => {
-        getTasks()
+        handleGetCurrentUser()
     }, [])
+
+    React.useEffect(() => {
+        if (currentUser?.id) {
+            getTasks()
+            handleGetBarChartData()
+            handleGetLineChartData()
+            handleGetOverviewTasks()
+        }
+    }, [currentUser?.id])
 
     return (
         <Box sx={{ flexGrow: 1, p: 2 }}>
@@ -111,7 +184,7 @@ const Dashboard = () => {
                             Completed Tasks
                         </Typography>
                         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                            {dashboardTasks.total_completed_tasks || 10}
+                            {dashboardTasks.total_completed_tasks || 0}
                         </Typography>
                     </Paper>
                 </Grid>
@@ -122,7 +195,7 @@ const Dashboard = () => {
                             Tasks Remaining
                         </Typography>
                         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                            {dashboardTasks.total_remaining_tasks || 5}
+                            {dashboardTasks.total_remaining_tasks || 0}
                         </Typography>
                     </Paper>
                 </Grid>
@@ -144,18 +217,32 @@ const Dashboard = () => {
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} sx={{ p: 2, height: 350 }}>
                         <Typography variant="h6" gutterBottom>
-                            Monthly Task Overview
+                            Priority Task Overview
                         </Typography>
                         <BarChart
                             series={[
-                                { data: [3, 4, 1, 6, 5], label: 'Overdue Task' },
-                                { data: [4, 3, 2, 8, 9], label: 'Completed Task' },
+                                {
+                                    data: barChartData.overdue,
+                                    label: 'Overdue Task',
+                                },
+                                {
+                                    data: barChartData.completed,
+                                    label: 'Completed Task',
+                                },
                             ]}
                             height={280}
                             xAxis={[
                                 {
-                                    data: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                                    data: barChartData.categories,
                                     scaleType: 'band',
+                                },
+                            ]}
+                            yAxis={[
+                                {
+                                    label: 'Number of Tasks',
+                                    min: 0,
+                                    max: 10,
+                                    tickCount: 5,
                                 },
                             ]}
                             margin={{
@@ -171,15 +258,33 @@ const Dashboard = () => {
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} sx={{ p: 2, height: 350 }}>
                         <Typography variant="h6" gutterBottom>
-                            User Activity
+                            Tasks Created Over 6 Previous Days
                         </Typography>
                         <LineChart
                             series={[
-                                { data: [2, 5, 6, 8, 10], label: 'Users' },
+                                {
+                                    data: lineChartData.counts,
+                                    label: 'Tasks Created',
+                                },
                             ]}
                             height={280}
-                            xAxis={[{ data: [1, 2, 3, 4, 5], label: 'Day' }]}
-                            yAxis={[{ label: 'Count' }]}
+                            xAxis={[
+                                {
+                                    data: dayLabels.map((_, i) => i), // [0,1,2,3,4,5,6]
+                                    label: 'Day',
+                                    labelFormatter: (value) =>
+                                        dayLabels[value] || value,
+                                    scaleType: 'band',
+                                },
+                            ]}
+                            yAxis={[
+                                {
+                                    label: 'Number of Tasks',
+                                    min: 0,
+                                    max: 10,
+                                    tickCount: 5,
+                                },
+                            ]}
                             margin={{
                                 top: 10,
                                 bottom: 30,
@@ -194,55 +299,167 @@ const Dashboard = () => {
             {/* 5. Table Section */}
             <Paper elevation={3} sx={{ p: 2 }}>
                 <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
-                    Recent Completed Tasks
+                    Task Overview
                 </Typography>
-                <TableContainer>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Task name</TableCell>
-                                <TableCell align="right">Priority</TableCell>
-                                <TableCell align="right">
-                                    Create date
-                                </TableCell>
-                                <TableCell align="right">
-                                    Completed date
-                                </TableCell>
-                                <TableCell align="right">
-                                    Project
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map((row) => (
-                                <TableRow
-                                    key={row.name}
-                                    sx={{
-                                        '&:last-child td, &:last-child th': {
-                                            border: 0,
-                                        },
-                                    }}
-                                >
-                                    <TableCell component="th" scope="row">
-                                        {row.name}
+
+                <Tabs
+                    value={tabIndex}
+                    onChange={handleTabChange}
+                    sx={{ mb: 2 }}
+                >
+                    <Tab label="Upcoming Tasks" />
+                    <Tab label="Completed Tasks" />
+                </Tabs>
+
+                {tabIndex === 0 && (
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Task Name</TableCell>
+                                    <TableCell align="left">
+                                        Description
                                     </TableCell>
-                                    <TableCell align="right">
-                                        {row.calories}
+                                    <TableCell align="left">Priority</TableCell>
+                                    <TableCell align="left">
+                                        Start Date
                                     </TableCell>
-                                    <TableCell align="right">
-                                        {row.fat}
+                                    <TableCell align="left">Due Date</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {upcomingTasks.map((task) => (
+                                    <TableRow key={task.id}>
+                                        <TableCell>{task.name}</TableCell>
+                                        <TableCell align="left">
+                                            {task.description}
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            <Button
+                                                size="small"
+                                                sx={{
+                                                    bgcolor:
+                                                        task.priority === 'High'
+                                                            ? theme.palette
+                                                                .error.light
+                                                            : task.priority ===
+                                                                'Medium'
+                                                                ? theme.palette
+                                                                    .warning
+                                                                    .light
+                                                                : theme.palette
+                                                                    .info.light,
+                                                    color:
+                                                        task.priority === 'High'
+                                                            ? theme.palette
+                                                                .error
+                                                                .contrastText
+                                                            : task.priority ===
+                                                                'Medium'
+                                                                ? theme.palette
+                                                                    .warning
+                                                                    .contrastText
+                                                                : theme.palette
+                                                                    .info
+                                                                    .contrastText,
+                                                    textTransform: 'none',
+                                                    borderRadius: 1,
+                                                    px: 1,
+                                                    py: 0.5,
+                                                    fontSize: '0.75rem',
+                                                }}
+                                            >
+                                                {task.priority}
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            {task.start_date}
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            {task.due_date}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
+
+                {tabIndex === 1 && (
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Task Name</TableCell>
+                                    <TableCell align="left">
+                                        Description
                                     </TableCell>
-                                    <TableCell align="right">
-                                        {row.carbs}
+                                    <TableCell align="left">Priority</TableCell>
+                                    <TableCell align="left">
+                                        Created Date
                                     </TableCell>
-                                    <TableCell align="right">
-                                        {row.protein}
+                                    <TableCell align="left">
+                                        Completed Date
                                     </TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {completedTasks.map((task) => (
+                                    <TableRow key={task.id}>
+                                        <TableCell>{task.name}</TableCell>
+                                        <TableCell align="left">
+                                            {task.description}
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            <Button
+                                                size="small"
+                                                sx={{
+                                                    bgcolor:
+                                                        task.priority === 'High'
+                                                            ? theme.palette
+                                                                .error.light
+                                                            : task.priority ===
+                                                                'Medium'
+                                                                ? theme.palette
+                                                                    .warning
+                                                                    .light
+                                                                : theme.palette
+                                                                    .info.light,
+                                                    color:
+                                                        task.priority === 'High'
+                                                            ? theme.palette
+                                                                .error
+                                                                .contrastText
+                                                            : task.priority ===
+                                                                'Medium'
+                                                                ? theme.palette
+                                                                    .warning
+                                                                    .contrastText
+                                                                : theme.palette
+                                                                    .info
+                                                                    .contrastText,
+                                                    textTransform: 'none',
+                                                    borderRadius: 1,
+                                                    px: 1,
+                                                    py: 0.5,
+                                                    fontSize: '0.75rem',
+                                                }}
+                                            >
+                                                {task.priority}
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            {task.start_date}
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            {task.completed_date}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
             </Paper>
         </Box>
     )

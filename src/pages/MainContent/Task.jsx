@@ -23,9 +23,14 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import AskTask from '@/components/AskTask'
 import TaskRow from '@/components/TaskRow'
 import { createTask, getTasksByUserId, updateTask } from '@/services/task'
+import { useDispatch } from 'react-redux'
+import { getCurrentUserAction } from '@/stores/authAction.js'
+
 
 const Task = () => {
     const theme = useTheme()
+    const dispatch = useDispatch()
+    const [user, setUser] = useState({})
     const [expandedTasks, setExpandedTasks] = useState(true)
     const [expandedCompleted, setExpandedCompleted] = useState(true)
     const [showDialog, setShowDialog] = useState(false)
@@ -48,13 +53,21 @@ const Task = () => {
 
     const handleListTask = async () => {
         try {
-            const userInfo = JSON.parse(localStorage.getItem('INFO'))
-            const userId = userInfo?.user?.id
+            const userId = user.id
             const response = await getTasksByUserId(userId, 1, 1000)
             console.log('Fetched tasks:', response)
             setTasks(response?.data || [])
         } catch (error) {
             console.error('Error fetching tasks:', error)
+        }
+    }
+
+    const handleGetCurrentUser = async () => {
+        try {
+            const userInfo = await dispatch(getCurrentUserAction())
+            setUser(userInfo?.payload?.user || {})
+        } catch (error) {
+            console.error('Error fetching current user:', error)
         }
     }
 
@@ -73,9 +86,15 @@ const Task = () => {
         }
     }
 
-    useEffect(() => {
-        handleListTask()
+    React.useEffect(() => {
+        handleGetCurrentUser()
     }, [])
+
+    React.useEffect(() => {
+        if (user?.id) {
+            handleListTask()
+        }
+    }, [user?.id])
 
     const unfinishedTasks = tasks.filter((task) => task.status === false)
     const completedTasks = tasks.filter((task) => task.status === true)

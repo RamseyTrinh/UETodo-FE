@@ -10,11 +10,9 @@ import { BrowserRouter } from 'react-router-dom'; // Nếu bạn đang dùng rea
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}> {/* Nếu bạn đang dùng Redux */}
-      <ThemeProvider> {/* Bọc toàn bộ ứng dụng bằng ThemeProvider */}
         <BrowserRouter> 
           <App />
         </BrowserRouter>
-      </ThemeProvider>
     </Provider>
   </React.StrictMode>,
 );
