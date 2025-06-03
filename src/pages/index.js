@@ -4,3 +4,4 @@ export {default as Login} from "./Login";
 export {default as Dashboard} from "./MainContent/Dashboard"
 export {default as Task} from "./MainContent/Task"
 export {default as Calendar} from "./MainContent/Calendar"
+export {default as Profile} from "./User/Profile"

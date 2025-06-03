@@ -22,11 +22,14 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { getCurrentUserAction } from '@/stores/authAction.js'
 
 const drawerWidth = 240;
 
 const ThemeLayoutsSideBar = () => {
     const theme = useTheme();
+    const dispatch = useDispatch();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [mobileOpen, setMobileOpen] = useState(false);
     const [desktopOpen, setDesktopOpen] = useState(true);
@@ -70,6 +73,10 @@ const ThemeLayoutsSideBar = () => {
     React.useEffect(() => {
         handleGetCurrentUser()
     }, [])
+
+    React.useEffect(() => {
+        console.log('Current User:', currentUser);
+    }, [currentUser]);
 
     const drawerContent = (
         <Box>
@@ -173,7 +180,10 @@ const ThemeLayoutsSideBar = () => {
                     {/* Avatar and Menu */}
                     <Tooltip title="Open settings">
                         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                            <Avatar alt="User Name" src="/static/images/avatar/2.jpg" />
+                            <Avatar
+                                alt={currentUser?.name || "User"}
+                                src={currentUser?.avatar_url || "https://i.pravatar.cc/300"}
+                            />
                         </IconButton>
                     </Tooltip>
                     <Menu
@@ -190,7 +200,14 @@ const ThemeLayoutsSideBar = () => {
                         }}
                         sx={{ mt: '45px' }}
                     >
-                        <MenuItem onClick={handleCloseUserMenu}>Profile</MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                navigate('/profile');
+                                handleCloseUserMenu();
+                            }}
+                        >
+                            Profile
+                        </MenuItem>
                         <MenuItem onClick={handleCloseUserMenu}>Settings</MenuItem>
                         <MenuItem onClick={handleCloseUserMenu}>Logout</MenuItem>
                     </Menu>

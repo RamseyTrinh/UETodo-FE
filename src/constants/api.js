@@ -8,7 +8,10 @@ export const AUTH_API = {
 }
 
 export const USER_API = {
-    GET_CURRENT_USER: '/user/me'
+    GET_CURRENT_USER: '/user/me',
+    GET_USER: (userId) => `/user/${userId}`,
+    UPDATE_USER: (userId) => `/user/${userId}`,
+    CHANGE_PASSWORD: (userId) => `/user/${userId}/password`,
 }
 
 export const TASK_API = {

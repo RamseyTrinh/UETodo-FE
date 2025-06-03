@@ -11,7 +11,6 @@ function AppRoutes() {
         { path: PATHS.home, element: <Pages.Home /> },
         { path: PATHS.login, element: <Pages.Login /> },
         { path: PATHS.signup, element: <Pages.SignUp /> },
-
         {
             path: '/',
             element: <ThemeLayoutsSideBar />,
@@ -19,6 +18,7 @@ function AppRoutes() {
                 { path: PATHS.dashboard, element: <Pages.Dashboard /> },
                 { path: PATHS.task, element: <Pages.Task /> },
                 { path: PATHS.calendar, element: <Pages.Calendar /> },
+                { path: PATHS.profile, element: <Pages.Profile /> },
             ],
         },
 

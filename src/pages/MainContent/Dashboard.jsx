@@ -129,7 +129,7 @@ const Dashboard = () => {
 
     return (
         <Box>
-            <Typography variant="h5" gutterBottom>
+            <Typography variant="h5" fontWeight="bold" gutterBottom>
                 Welcome Back, {currentUser?.name || 'Guest'}!
             </Typography>
 

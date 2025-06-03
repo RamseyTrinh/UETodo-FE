@@ -5,4 +5,5 @@ export const PATHS = {
     dashboard: '/dashboard',
     task: '/task',
     calendar: '/calendar',
+    profile: '/profile',
 }
