@@ -1,63 +1,148 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box, Container } from '@mui/material';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  Container,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
 import { styled } from '@mui/system';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = styled('div')(({ theme }) => ({
-  background: 'linear-gradient(135deg, #121e13, #0c0f0c)',
-  color: 'white',
-  padding: theme.spacing(10, 0),
+  background: 'linear-gradient(135deg, #0d47a1, #1976d2)', // gradient xanh đậm -> xanh chuẩn MUI primary
+  color: '#e3f2fd',
+  padding: theme.spacing(12, 2),
   textAlign: 'center',
+  minHeight: '70vh',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(8, 2),
+  },
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(2),
-  backgroundColor: '#4CAF50',
+  borderRadius: 30,
+  padding: '12px 36px',
+  fontWeight: 'bold',
+  fontSize: '1.1rem',
+  textTransform: 'none',
+  backgroundColor: '#1976d2', // xanh chuẩn primary
   color: '#fff',
+  boxShadow: '0 4px 12px rgb(25 118 210 / 0.5)',
   '&:hover': {
-    backgroundColor: '#45a049',
+    backgroundColor: '#1565c0',
+    boxShadow: '0 6px 16px rgb(21 101 192 / 0.7)',
   },
 }));
 
 const Home = () => {
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Box>
-      <AppBar position="fixed" color="default" elevation={1}>
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }} component={Link} to="/">
-            UEToDo Task
-          </Typography>
-          <Box mr={4}>
-          <Button color="inherit">Product</Button>
-          <Button color="inherit">Solutions</Button>
-          <Button color="inherit">Support</Button>
-          <Button color="inherit">Pricing</Button>
-          <Button color="inherit">About Us</Button>
-          <StyledButton variant="contained" component={Link} to="/login">Try Now</StyledButton>
+      <AppBar
+        position="fixed"
+        sx={{
+          backgroundColor: '#1976d2',
+          boxShadow: '0 2px 8px rgb(25 118 210 / 0.6)',
+          paddingLeft: 0, // fix khoảng trắng bên trái
+          paddingRight: 0, // fix khoảng trắng bên phải
+        }}
+      >
+        <Toolbar
+          sx={{
+            minHeight: 64,
+            px: 2, // padding trái phải đều nhau (16px)
+            display: 'flex',
+            justifyContent: 'space-between',
+            maxWidth: 1200,
+            mx: 'auto', // căn giữa trong maxWidth
+            width: '100%',
+          }}
+        >
+          <Box
+            onClick={() => navigate('/')}
+            sx={{
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontSize: '1.5rem',
+              color: '#e3f2fd',
+              letterSpacing: 1,
+              userSelect: 'none',
+            }}
+          >
+            UETodo App
+          </Box>
+          <Box>
+            <Button
+              sx={{
+                color: '#e3f2fd',
+                textTransform: 'none',
+                fontWeight: '600',
+                mr: 1.5,
+                '&:hover': { backgroundColor: 'rgba(255,255,255,0.15)' },
+              }}
+              onClick={() => navigate('/product')}
+            >
+              Product
+            </Button>
+            <Button
+              sx={{
+                color: '#e3f2fd',
+                textTransform: 'none',
+                fontWeight: '600',
+                mr: 2,
+                '&:hover': { backgroundColor: 'rgba(255,255,255,0.15)' },
+              }}
+              onClick={() => navigate('/about')}
+            >
+              About Us
+            </Button>
+            <StyledButton onClick={() => navigate('/login')}>Try Now</StyledButton>
           </Box>
         </Toolbar>
       </AppBar>
 
-      {/* Hero Section */}
       <HeroSection>
-        <Typography variant="h2" sx={{ fontWeight: 'bold' }}>
-          Doo<span style={{ color: '#66bb6a' }}>Task</span>, Lightweight task management tool
+        <Typography
+          variant={isMobile ? 'h4' : 'h2'}
+          sx={{ fontWeight: '900', letterSpacing: 1, lineHeight: 1.2 }}
+        >
+          Doo
+          <Box component="span" sx={{ color: '#a5d6a7' }}>
+            Task
+          </Box>
+          , Lightweight task management tool
         </Typography>
-        <Typography variant="subtitle1" sx={{ marginTop: 2 }}>
-          Lightweight open source online project task management tool to help teams efficiently advance their projects and make work easier.
+        <Typography
+          variant={isMobile ? 'body1' : 'h6'}
+          sx={{ marginTop: 3, maxWidth: 600, marginX: 'auto', fontWeight: 500 }}
+        >
+          Lightweight open source online project task management tool to help teams
+          efficiently advance their projects and make work easier.
         </Typography>
-        <Box sx={{ marginTop: 4 }}>
-          <StyledButton variant="contained">Get Started</StyledButton>
-          <StyledButton variant="outlined">Self Hosting</StyledButton>
+        <Box sx={{ marginTop: 5 }}>
+          <StyledButton onClick={() => navigate('/get-started')}>Get Started</StyledButton>
         </Box>
       </HeroSection>
 
-      {/* Images and more content */}
-      <Container sx={{ textAlign: 'center', padding: 4 }}>
+      <Container sx={{ textAlign: 'center', paddingY: 6, maxWidth: 1200 }}>
         <img
           src="/your-uploaded-image-path.png"
           alt="Dashboard preview"
-          style={{ width: '100%', maxWidth: 1000, borderRadius: 10 }}
+          style={{
+            width: '100%',
+            borderRadius: 16,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+          }}
         />
       </Container>
     </Box>
