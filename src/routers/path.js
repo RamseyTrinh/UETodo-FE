@@ -9,4 +9,5 @@ export const PATHS = {
     resetPassword: '/reset-password',
     resetPasswordForm: '/reset-password-form',
     about: '/about',
+    product: '/product',
 }

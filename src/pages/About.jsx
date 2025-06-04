@@ -1,7 +1,20 @@
-import { Box, Typography, Avatar, Card, CardContent, Divider, Button } from '@mui/material'
+import React from 'react'
+import {
+    Box,
+    Typography,
+    Avatar,
+    Card,
+    CardContent,
+    Divider,
+    Button,
+    Grid,
+    Stack,
+    Chip,
+} from '@mui/material'
 import { Email, Phone, Home } from '@mui/icons-material'
 import { useTheme } from '@mui/material/styles'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 const AboutUs = () => {
     const theme = useTheme()
@@ -11,82 +24,165 @@ const AboutUs = () => {
         <Box
             sx={{
                 minHeight: '100vh',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                backgroundColor: theme.palette.background.default,
-                px: 2,
-                pt: 4,
+                p: 4,
+                background: `linear-gradient(to bottom right, ${theme.palette.grey[100]}, ${theme.palette.background.default})`,
             }}
         >
-            {/* Nút quay về Home với tên app */}
-            <Button
-                variant="text"
-                startIcon={<Home />}
-                onClick={() => navigate('/')}
-                sx={{
-                    color: theme.palette.primary.main,
-                    mb: 2,
-                    fontSize: '1.2rem',
-                    fontWeight: 'bold',
-                    textTransform: 'none',
-                    '&:hover': {
-                        backgroundColor: 'transparent',
-                        textDecoration: 'underline',
-                    },
-                }}
-            >
-                UETodoApp
-            </Button>
-
-            <Card
-                sx={{
-                    maxWidth: 500,
-                    width: '100%',
-                    p: 4,
-                    textAlign: 'center',
-                    boxShadow: 6,
-                    borderRadius: 4,
-                    backgroundColor: theme.palette.background.paper,
-                }}
-            >
-                <Avatar
-                    alt="Ramsey Trinh"
+            {/* Top Bar */}
+            <Box alignContent={'center'}>
+                <Button
+                    startIcon={<Home />}
+                    onClick={() => navigate('/')}
                     sx={{
-                        width: 100,
-                        height: 100,
-                        mx: 'auto',
-                        mb: 2,
-                        bgcolor: theme.palette.primary.main,
-                        fontSize: 36,
+                        fontSize: '1.5rem',
+                        fontWeight: 'bold',
+                        color: theme.palette.primary.main,
+                        textTransform: 'none',
+                        '&:hover': {
+                            backgroundColor: 'transparent',
+                            textDecoration: 'underline',
+                        },
                     }}
                 >
-                    R
-                </Avatar>
-                <Typography variant="h4" fontWeight="bold" color="primary" gutterBottom>
-                    RamseyTrinh
-                </Typography>
-                <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-                    Developer & Creator of this Application
-                </Typography>
+                    UETodo
+                </Button>
+                {/* <Button
+          variant="contained"
+          onClick={() => navigate('/login')}
+          sx={{ textTransform: 'none', borderRadius: 3, px: 3 }}
+        >
+          Get Started
+        </Button> */}
+            </Box>
 
-                <Divider sx={{ my: 3 }} />
+            <Divider sx={{ mb: 4 }} />
 
-                <CardContent>
-                    <Box display="flex" alignItems="center" justifyContent="center" mb={1}>
-                        <Phone sx={{ color: theme.palette.primary.main, mr: 1 }} />
-                        <Typography variant="body1">+84 394 836 338</Typography>
-                    </Box>
-                    <Box display="flex" alignItems="center" justifyContent="center">
-                        <Email sx={{ color: theme.palette.primary.main, mr: 1 }} />
-                        <Typography variant="body1">ramsey@example.com</Typography>
-                    </Box>
-                </CardContent>
+            {/* Main Content */}
+            <Grid container spacing={4} alignItems="center">
+                {/* Avatar + Info */}
+                <Grid item xs={12} md={5}>
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <Card
+                            sx={{
+                                p: 4,
+                                borderRadius: 6,
+                                boxShadow: 10,
+                                textAlign: 'center',
+                            }}
+                        >
+                            <Avatar
+                                alt="Ramsey Trinh"
+                                src="/src/assets/avatar_image.jpg"
+                                sx={{
+                                    width: 120,
+                                    height: 120,
+                                    mb: 2,
+                                    mx: 'auto',
+                                    border: `4px solid ${theme.palette.primary.main}`,
+                                }}
+                            />
+                            <Typography variant="h5" fontWeight="bold" color="primary">
+                                Ramsey Trinh
+                            </Typography>
+                            <Typography variant="subtitle1" color="text.secondary">
+                                Developer & Creator
+                            </Typography>
 
-                <Typography variant="body2" color="text.secondary" mt={4}>
-                    This app is built with passion and care to help users manage tasks and productivity effectively.
-                </Typography>
-            </Card>
+                            <Divider sx={{ my: 3 }} />
+                            <Stack spacing={1.5} alignItems="center">
+                                <Box display="flex" alignItems="center">
+                                    <Phone fontSize="small" sx={{ color: theme.palette.primary.main, mr: 1 }} />
+                                    <Typography variant="body1">+84 394 836 338</Typography>
+                                </Box>
+                                <Box display="flex" alignItems="center">
+                                    <Email fontSize="small" sx={{ color: theme.palette.primary.main, mr: 1 }} />
+                                    <Typography variant="body1">hoangkmhd190@gmail.com</Typography>
+                                </Box>
+                                <Box display="flex" alignItems="center">
+                                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" width={20} style={{ marginRight: 8, color: 'blue' }} />
+                                    <Typography variant="body1">
+                                        <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'secondary' }}>
+                                            https://github.com/RamseyTrinh
+                                        </a>
+                                    </Typography>
+                                </Box>
+                                <Box display="flex" alignItems="center">
+                                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/facebook/facebook-original.svg" alt="Facebook" width={20} style={{ marginRight: 8 }} />
+                                    <Typography variant="body1">
+                                        <a href="https://facebook.com/yourprofile" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'secondary' }}>
+                                            https://www.facebook.com/ramseytrinh1405
+                                        </a>
+                                    </Typography>
+                                </Box>
+
+                            </Stack>
+                        </Card>
+                    </motion.div>
+                </Grid>
+
+                {/* Description */}
+                <Grid item xs={12} md={7}>
+                    <motion.div
+                        initial={{ opacity: 0, x: 30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <Card
+                            sx={{
+                                p: 4,
+                                borderRadius: 6,
+                                boxShadow: 10,
+                                backgroundColor: theme.palette.grey[50],
+                            }}
+                        >
+                            <Typography variant="h4" fontWeight="bold" mb={2} sx={{ color: theme.palette.primary.main }}>
+                                About the App
+                            </Typography>
+                            <Typography variant="body1" mb={3}>
+                                UETodoApp is designed to help students and professionals manage their time
+                                and tasks more efficiently. Built with passion and modern technologies,
+                                this app aims to simplify your daily routine with clean design and seamless user experience.
+                            </Typography>
+
+                            <Divider sx={{ my: 2 }} />
+
+                            <Typography variant="h6" fontWeight="medium" mb={1} sx={{ color: theme.palette.primary.main }}>
+                                🚀 Technologies Used
+                            </Typography>
+                            <Stack direction="row" flexWrap="wrap" spacing={1} mb={3} justifyContent="center">
+                                {['React', 'MUI', 'Framer Motion', 'React Router', 'Node.js', 'MongoDB'].map((tech) => (
+                                    <Chip key={tech} label={tech} color="primary" variant="outlined" />
+                                ))}
+                            </Stack>
+                            <Typography variant="h6" fontWeight="medium" mb={1} sx={{ color: theme.palette.primary.main }}>
+                                🎯 Mission
+                            </Typography>
+                            <Typography variant="body1" mb={3}>
+                                To empower users with a tool that enhances focus, organization, and long-term productivity through intuitive task management.
+                            </Typography>
+                            <Typography variant="h6" fontWeight="medium" mb={1} sx={{ color: theme.palette.primary.main }}>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" width={20} style={{ marginRight: 8, color: 'blue' }} />
+                                Reposistory
+                            </Typography>
+                            <Typography variant="body1">
+                                You can find the source code for this project on GitHub:&nbsp;
+                                <a
+                                    href="https://github.com/RamseyTrinh"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ color: theme.palette.primary.main, textDecoration: 'none', fontWeight: 'bold' }}
+                                >
+                                    https://github.com/RamseyTrinh
+                                </a>
+                            </Typography>
+                        </Card>
+                    </motion.div>
+                </Grid>
+            </Grid>
         </Box>
     )
 }

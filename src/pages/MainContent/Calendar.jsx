@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import AskTask from '../../components/AskTask'
+import AddTask from '../../components/AddTask'
 import { Box, Paper, useTheme, Alert, Snackbar } from '@mui/material'
 
 import { createTask, getTasksByUserId } from '@/services/task'
@@ -188,7 +188,7 @@ const Calendar = () => {
           eventClassNames={() => ['event-custom']}
         />
 
-        <AskTask
+        <AddTask
           open={modalOpen}
           onClose={() => setModalOpen(false)}
           onCreate={handleCreateTask}
@@ -303,7 +303,8 @@ const Calendar = () => {
             .fc .fc-button.fc-today-button:hover {
                 background-color: ${theme.palette.primary.dark} !important;
                 border-color: ${theme.palette.primary.dark} !important;
-            }
+            }import AddTask from './../../components/AddTask';
+
           `}
         </style>
       </Paper>

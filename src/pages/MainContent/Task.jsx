@@ -20,7 +20,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import AskTask from '@/components/AskTask'
+import AddTask from '@/components/AddTask'
 import TaskRow from '@/components/TaskRow'
 import { createTask, getTasksByUserId, updateTask } from '@/services/task'
 import { useDispatch } from 'react-redux'
@@ -183,7 +183,7 @@ const Task = () => {
                 </Alert>
             </Snackbar>
 
-            <AskTask open={showDialog} onClose={() => { setShowDialog(false) }} onCreate={handleCreateTask} selectedDate={null}/>
+            <AddTask open={showDialog} onClose={() => { setShowDialog(false) }} onCreate={handleCreateTask} selectedDate={null}/>
         </Box>
     )
 }

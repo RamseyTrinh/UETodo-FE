@@ -9,9 +9,19 @@ import {
     MenuItem,
     Snackbar,
     Alert,
+    Box,
+    Typography,
+    useTheme
 } from '@mui/material'
 
-const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
+const priorityColors = {
+    High: 'error.main',      
+    Medium: 'warning.main',  
+    Low: 'info.main',       
+}
+
+const AddTask = ({ open, onClose, onCreate, selectedDate }) => {
+    const theme = useTheme()
     const [error, setError] = useState(null)
     const [task, setTask] = useState({
         name: '',
@@ -24,14 +34,14 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
 
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem('INFO'))
-        const userId =  parseInt(userInfo?.user?.id)
+        const userId = parseInt(userInfo?.user?.id)
         if (userId) {
             setTask((prev) => ({
                 ...prev,
                 user_id: userId,
             }))
         }
-        if(selectedDate) {
+        if (selectedDate) {
             setTask((prev) => ({
                 ...prev,
                 start_date: selectedDate,
@@ -49,18 +59,18 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
     const handleStartDateChange = (e) => {
         const value = e.target.value
 
-        if(selectedDate) {
+        if (selectedDate) {
             if (new Date(value) !== new Date(selectedDate)) {
                 setError('Cannot change start date when a date is selected')
                 return
             }
         } else {
             setTask((prev) => ({
-            ...prev,
-            start_date: value,
-        }))
+                ...prev,
+                start_date: value,
+            }))
         }
-        
+
     }
 
     const handleDueDateChange = (e) => {
@@ -117,8 +127,8 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
 
     return (
         <>
-            <Dialog open={open} onClose={handleOnClose}>
-                <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>Add New Task</DialogTitle>
+            <Dialog open={open} onClose={handleOnClose} maxWidth="sm" fullWidth>
+                <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: theme.palette.primary.main }}>Add New Task</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -128,6 +138,7 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
                         fullWidth
                         value={task.name}
                         onChange={handleChange('name')}
+                        sx={{ mb: 2 }}
                     />
                     <TextField
                         margin="dense"
@@ -138,6 +149,7 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
                         rows={3}
                         value={task.description}
                         onChange={handleChange('description')}
+                        sx={{ mb: 2 }}
                     />
                     <TextField
                         margin="dense"
@@ -146,13 +158,48 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
                         fullWidth
                         value={task.priority}
                         onChange={handleChange('priority')}
+                        sx={{ mb: 2 }}
+                        SelectProps={{
+                            renderValue: (selected) => (
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography>{selected}</Typography>
+                                    <Box
+                                        sx={{
+                                            width: 16,
+                                            height: 16,
+                                            bgcolor: priorityColors[selected],
+                                            borderRadius: '4px',
+                                            ml: 1,
+                                        }}
+                                    />
+                                </Box>
+                            ),
+                        }}
                     >
                         {['High', 'Medium', 'Low'].map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {option}
+                            <MenuItem
+                                key={option}
+                                value={option}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1,
+                                    color: (theme) => theme.palette[priorityColors[option].split('.')[0]][priorityColors[option].split('.')[1]],
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        width: 16,
+                                        height: 16,
+                                        bgcolor: priorityColors[option],
+                                        borderRadius: '4px',
+                                    }}
+                                />
+                                <Typography>{option}</Typography>
                             </MenuItem>
                         ))}
                     </TextField>
+
                     <TextField
                         margin="dense"
                         label="Start Date"
@@ -161,6 +208,7 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
                         value={task.start_date || selectedDate || ''}
                         onChange={handleStartDateChange}
                         InputLabelProps={{ shrink: true }}
+                        sx={{ mb: 2 }}
                     />
                     <TextField
                         margin="dense"
@@ -170,11 +218,12 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
                         value={task.due_date}
                         onChange={handleDueDateChange}
                         InputLabelProps={{ shrink: true }}
+                        sx={{ mb: 1 }}
                     />
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleOnClose} color='error'>Cancel</Button>
-                    <Button onClick={handleSubmit} variant='contained'>Add Task</Button>
+                <DialogActions sx={{ px: 3, pb: 3 }}>
+                    <Button onClick={handleOnClose} color="error" variant="outlined">Cancel</Button>
+                    <Button onClick={handleSubmit} variant="contained">Add Task</Button>
                 </DialogActions>
             </Dialog>
 
@@ -192,4 +241,4 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
     )
 }
 
-export default AskTask
+export default AddTask

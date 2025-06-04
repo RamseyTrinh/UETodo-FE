@@ -30,7 +30,7 @@ import { AccountCircle, Settings, Logout } from '@mui/icons-material'
 
 const drawerWidth = 240;
 
-const ThemeLayoutsSideBar = () => {
+const LayoutSidebar = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -328,4 +328,4 @@ const ThemeLayoutsSideBar = () => {
     );
 };
 
-export default ThemeLayoutsSideBar;
+export default LayoutSidebar;

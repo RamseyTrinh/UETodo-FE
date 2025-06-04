@@ -9,9 +9,19 @@ import {
     MenuItem,
     Snackbar,
     Alert,
+    Box,
+    Typography,
+    useTheme,
 } from '@mui/material'
 
 const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
+    const theme = useTheme()
+    const priorityColors = {
+        High: 'error.main',
+        Medium: 'warning.main',
+        Low: 'info.main',
+    }
+
     const [error, setError] = useState(null)
     const [task, setTask] = useState({
         id: editTask?.id || null,
@@ -24,7 +34,7 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
 
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem('INFO'))
-        const userId =  parseInt(userInfo?.user?.id)
+        const userId = parseInt(userInfo?.user?.id)
         if (userId) {
             setTask((prev) => ({
                 ...prev,
@@ -80,7 +90,9 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
     return (
         <>
             <Dialog open={open} onClose={onClose}>
-                <DialogTitle>Update Task</DialogTitle>
+                <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: theme.palette.primary.main }}>
+                    Update Task
+                </DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -108,10 +120,44 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
                         fullWidth
                         value={task.priority}
                         onChange={handleChange('priority')}
+                        sx={{ mb: 2 }}
+                        SelectProps={{
+                            renderValue: (selected) => (
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography>{selected}</Typography>
+                                    <Box
+                                        sx={{
+                                            width: 16,
+                                            height: 16,
+                                            bgcolor: priorityColors[selected],
+                                            borderRadius: '4px',
+                                            ml: 1,
+                                        }}
+                                    />
+                                </Box>
+                            ),
+                        }}
                     >
                         {['High', 'Medium', 'Low'].map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {option}
+                            <MenuItem
+                                key={option}
+                                value={option}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1,
+                                    color: (theme) => theme.palette[priorityColors[option].split('.')[0]][priorityColors[option].split('.')[1]],
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        width: 16,
+                                        height: 16,
+                                        bgcolor: priorityColors[option],
+                                        borderRadius: '4px',
+                                    }}
+                                />
+                                <Typography>{option}</Typography>
                             </MenuItem>
                         ))}
                     </TextField>
@@ -126,8 +172,8 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose}>Cancel</Button>
-                    <Button onClick={handleSubmit}>Update Task</Button>
+                    <Button onClick={onClose} color="error" variant="outlined">Cancel</Button>
+                    <Button onClick={handleSubmit} variant="contained">Update Task</Button>
                 </DialogActions>
             </Dialog>
 

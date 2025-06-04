@@ -1,7 +1,7 @@
 // src/routers/Routers.jsx
 import { Navigate, useRoutes } from 'react-router-dom';
 import * as Pages from '@/pages';
-import ThemeLayoutsSideBar from '@/layouts/ThemeLayoutsSideBar';
+import LayoutSideBar from '@/layouts/LayoutSidebar';
 import { PATHS } from './path';
 import NotFound from '@/pages/NotFound';
 
@@ -14,9 +14,10 @@ function AppRoutes() {
         { path: PATHS.resetPassword, element: <Pages.ResetPassword /> },
         { path: PATHS.resetPasswordForm, element: <Pages.ResetPasswordForm /> },
         { path: PATHS.about, element: <Pages.About /> },
+        { path: PATHS.product, element: <Pages.Product /> },
         {
             path: '/',
-            element: <ThemeLayoutsSideBar />,
+            element: <LayoutSideBar />,
             children: [
                 { path: PATHS.dashboard, element: <Pages.Dashboard /> },
                 { path: PATHS.task, element: <Pages.Task /> },

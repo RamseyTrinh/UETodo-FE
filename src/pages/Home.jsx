@@ -13,6 +13,10 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
+import ScheduleIcon from '@mui/icons-material/Schedule'
+import BarChartIcon from '@mui/icons-material/BarChart'
+import GroupIcon from '@mui/icons-material/Group'
+import store from './../stores/index';
 
 const Home = () => {
   const theme = useTheme()
@@ -67,9 +71,9 @@ const Home = () => {
             <Button
               variant="contained"
               onClick={() => navigate('/login')}
-              sx={{ backgroundColor: '#80D8C3', textTransform: 'none', fontWeight: 'bold', borderRadius: 8 }}
+              sx={{ backgroundColor: '#80D8C3', fontWeight: 'bold', borderRadius: 8, px: 3, color: '#333446', '&:hover': { backgroundColor: '#64B5F6' } }}
             >
-              Try Now
+              Get started
             </Button>
           </Stack>
         </Toolbar>
@@ -107,7 +111,6 @@ const Home = () => {
           transition={{ delay: 0.5, duration: 1 }}
         >
           <Box
-
             sx={{
               position: 'relative',
               mt: 6,
@@ -133,14 +136,22 @@ const Home = () => {
                   display: 'block',
                 }}
               />
+
             ))}
           </Box>
+          <Typography mt={6} variant="h5" fontWeight="bold" textAlign="center" color="text.secondary">
+            {[
+              "Easily track all your tasks in one place.",
+              "Beautiful and intuitive list interface.",
+              "Plan your schedule with integrated calendar view."
+            ][currentImage]}
+          </Typography>
         </motion.div>
 
       </Container>
 
       {/* Features Section */}
-      <Container maxWidth="md" sx={{ mt: 10, mb: 10 }}>
+      <Container sx={{ mt: 10, mb: 10 }}>
         <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom>
           Why Choose UETodoApp?
         </Typography>
@@ -155,8 +166,17 @@ const Home = () => {
             title="Stay Focused"
             description="Focus mode and reminders keep your day productive and distraction-free."
           />
+
+          <FeatureCard icon={<ScheduleIcon />} title="Plan Daily Tasks" description="Stay on top of what matters every day." />
+          <FeatureCard icon={<BarChartIcon />} title="Track Progress" description="Visualize task completion in charts." />
         </Stack>
       </Container>
+      <Box textAlign="center" py={4} bgcolor="#F5F5F5">
+        <Typography variant="body2" color="text.secondary">
+          © 2025 UETodoApp. Made with 💙 by RamseyTrinh.
+        </Typography>
+      </Box>
+
     </Box >
   )
 }
@@ -180,6 +200,7 @@ const FeatureCard = ({ icon, title, description }) => {
       <Typography variant="body1" color="text.secondary">
         {description}
       </Typography>
+
     </Box>
   )
 }
