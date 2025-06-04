@@ -8,4 +8,5 @@ export const PATHS = {
     profile: '/profile',
     resetPassword: '/reset-password',
     resetPasswordForm: '/reset-password-form',
+    about: '/about',
 }

@@ -15,7 +15,6 @@ import {
     Tab,
     useTheme,
 } from '@mui/material'
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { BarChart, LineChart } from '@mui/x-charts'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -26,6 +25,11 @@ import {
 } from '@/services/task'
 import { useDispatch } from 'react-redux'
 import { getCurrentUserAction } from '@/stores/authAction.js'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { AssignmentTurnedIn, HourglassEmpty, TaskAlt, Warning } from '@mui/icons-material';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import { alpha } from '@mui/material/styles';
+
 
 const Dashboard = () => {
     const theme = useTheme()
@@ -137,14 +141,14 @@ const Dashboard = () => {
                 elevation={3}
                 sx={{
                     p: 3,
-                    mb: 4,
+                    mb: 2,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                 }}
             >
                 <Box>
-                    <Typography variant="h5" color="text.secondary">
+                    <Typography variant="h5">
                         Total Tasks
                     </Typography>
                     <Typography
@@ -157,57 +161,106 @@ const Dashboard = () => {
                 </Box>
                 <Button
                     variant="contained"
-                    startIcon={<AddCircleOutlineIcon />}
                     sx={{ height: 'fit-content' }}
+                    endIcon={<ArrowForwardIcon />}
                     onClick={() => {
                         navigate('/task')
                     }}
                 >
-                    Add Task
+                    View Detail Task
                 </Button>
             </Paper>
 
-            <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid container spacing={3} sx={{ mb: 3 }}>
                 <Grid item xs={12} sm={6} md={3}>
                     <Paper elevation={2} sx={{ p: 2, textAlign: 'center' }}>
-                        <Typography variant="subtitle1" color="text.secondary">
-                            Total Tasks
-                        </Typography>
-                        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                            {dashboardTasks.total_task || 15}
-                        </Typography>
+                        <Box
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            gap={1}
+                        >
+                            <Box display="flex" alignItems="center" gap={1}>
+                                <AssignmentIcon sx={{ color: theme.palette.primary.main }} />
+                                <Typography
+                                    variant="subtitle1"
+                                    sx={{ fontWeight: 'bold', color: theme.palette.primary.main }}
+                                >
+                                    Total Tasks
+                                </Typography>
+                            </Box>
+                            <Typography
+                                variant="h5"
+                                sx={{ fontWeight: 'bold', color: theme.palette.primary.main }}
+                            >
+                                {dashboardTasks.total_task || 15}
+                            </Typography>
+                        </Box>
                     </Paper>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
                     <Paper elevation={2} sx={{ p: 2, textAlign: 'center' }}>
-                        <Typography variant="subtitle1" color="text.secondary">
-                            Completed Tasks
-                        </Typography>
-                        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                            {dashboardTasks.total_completed_tasks || 0}
-                        </Typography>
+                        <Box
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            gap={1}
+                        >
+                            <Box display="flex" alignItems="center" gap={1}>
+                                <TaskAlt sx={{ color: theme.palette.success.main }} />
+                                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.success.main }}>
+                                    Completed Tasks
+                                </Typography>
+                            </Box>
+                            <Typography variant="h5" sx={{ fontWeight: 'bold', color: theme.palette.success.main }}>
+                                {dashboardTasks.total_completed_tasks || 0}
+                            </Typography>
+                        </Box>
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Paper elevation={2} sx={{ p: 2, textAlign: 'center' }}>
+                        <Box
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            gap={1}
+                        >
+                            <Box display="flex" alignItems="center" gap={1}>
+                                <HourglassEmpty sx={{ color: theme.palette.warning.main }} />
+                                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.warning.main }}>
+                                    Tasks Remaining
+                                </Typography>
+                            </Box>
+                            <Typography variant="h5" sx={{ fontWeight: 'bold', color: theme.palette.warning.main }}>
+                                {dashboardTasks.total_remaining_tasks || 0}
+                            </Typography>
+                        </Box>
                     </Paper>
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={3}>
                     <Paper elevation={2} sx={{ p: 2, textAlign: 'center' }}>
-                        <Typography variant="subtitle1" color="text.secondary">
-                            Tasks Remaining
-                        </Typography>
-                        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                            {dashboardTasks.total_remaining_tasks || 0}
-                        </Typography>
-                    </Paper>
-                </Grid>
-
-                <Grid item xs={12} sm={6} md={3}>
-                    <Paper elevation={2} sx={{ p: 2, textAlign: 'center' }}>
-                        <Typography variant="subtitle1" color="text.secondary">
-                            Tasks Overdue
-                        </Typography>
-                        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                            {dashboardTasks.total_overdue_tasks || 0}
-                        </Typography>
+                        <Box
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            gap={1}
+                        >
+                            <Box display="flex" alignItems="center" gap={1}>
+                                <Warning sx={{ color: theme.palette.error.main }} />
+                                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.error.main }}>
+                                    Tasks Overdue
+                                </Typography>
+                            </Box>
+                            <Typography variant="h5" sx={{ fontWeight: 'bold', color: theme.palette.error.main }}>
+                                {dashboardTasks.total_overdue_tasks || 0}
+                            </Typography>
+                        </Box>
                     </Paper>
                 </Grid>
             </Grid>

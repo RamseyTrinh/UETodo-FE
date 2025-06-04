@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   AppBar,
   Toolbar,
@@ -6,147 +6,182 @@ import {
   Button,
   Box,
   Container,
+  Stack,
   useTheme,
-  useMediaQuery,
-} from '@mui/material';
-import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom';
-
-const HeroSection = styled('div')(({ theme }) => ({
-  background: 'linear-gradient(135deg, #0d47a1, #1976d2)', // gradient xanh đậm -> xanh chuẩn MUI primary
-  color: '#e3f2fd',
-  padding: theme.spacing(12, 2),
-  textAlign: 'center',
-  minHeight: '70vh',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(8, 2),
-  },
-}));
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  borderRadius: 30,
-  padding: '12px 36px',
-  fontWeight: 'bold',
-  fontSize: '1.1rem',
-  textTransform: 'none',
-  backgroundColor: '#1976d2', // xanh chuẩn primary
-  color: '#fff',
-  boxShadow: '0 4px 12px rgb(25 118 210 / 0.5)',
-  '&:hover': {
-    backgroundColor: '#1565c0',
-    boxShadow: '0 6px 16px rgb(21 101 192 / 0.7)',
-  },
-}));
+} from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
+import TaskAltIcon from '@mui/icons-material/TaskAlt'
 
 const Home = () => {
-  const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const theme = useTheme()
+  const navigate = useNavigate()
+
+  const images = [
+    'https://images.prismic.io/smarttask/d1c1083c-db73-4562-917f-976f739d15ca_SmartTask-List-view.jpg?auto=compress,format',
+    'https://s3.cloud.cmctelecom.vn/tinhte2/2020/04/4974019_cover_wunderlist.jpg',
+    'https://images.ctfassets.net/rz1oowkt5gyp/7lpUSxVqNRggpqzCNcnfo1/04cf35d0a0ef60e18c6575eb9a0374e4/inbox-slider.png'
+  ]
+
+  const [currentImage, setCurrentImage] = React.useState(0)
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length)
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   return (
-    <Box>
-      <AppBar
-        position="fixed"
-        sx={{
-          backgroundColor: '#1976d2',
-          boxShadow: '0 2px 8px rgb(25 118 210 / 0.6)',
-          paddingLeft: 0, // fix khoảng trắng bên trái
-          paddingRight: 0, // fix khoảng trắng bên phải
-        }}
-      >
-        <Toolbar
-          sx={{
-            minHeight: 64,
-            px: 2, // padding trái phải đều nhau (16px)
-            display: 'flex',
-            justifyContent: 'space-between',
-            maxWidth: 1200,
-            mx: 'auto', // căn giữa trong maxWidth
-            width: '100%',
-          }}
-        >
-          <Box
+    <Box sx={{ flexGrow: 1 }}>
+      {/* AppBar */}
+      <AppBar position="static" color="default" elevation={2} sx={{
+        backgroundColor: '#2196F3',
+      }}>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 'bold', color: theme.palette.primary.contrastText, cursor: 'pointer' }}
             onClick={() => navigate('/')}
-            sx={{
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontSize: '1.5rem',
-              color: '#e3f2fd',
-              letterSpacing: 1,
-              userSelect: 'none',
-            }}
           >
-            UETodo App
-          </Box>
-          <Box>
+            UETodoApp
+          </Typography>
+
+          <Stack direction="row" spacing={2}>
             <Button
-              sx={{
-                color: '#e3f2fd',
-                textTransform: 'none',
-                fontWeight: '600',
-                mr: 1.5,
-                '&:hover': { backgroundColor: 'rgba(255,255,255,0.15)' },
-              }}
+              color="primary"
               onClick={() => navigate('/product')}
+              sx={{ fontWeight: 'bold', color: theme.palette.primary.contrastText, cursor: 'pointer' }}
             >
               Product
             </Button>
             <Button
-              sx={{
-                color: '#e3f2fd',
-                textTransform: 'none',
-                fontWeight: '600',
-                mr: 2,
-                '&:hover': { backgroundColor: 'rgba(255,255,255,0.15)' },
-              }}
+              color="primary"
               onClick={() => navigate('/about')}
+              sx={{ fontWeight: 'bold', color: theme.palette.primary.contrastText, cursor: 'pointer' }}
             >
               About Us
             </Button>
-            <StyledButton onClick={() => navigate('/login')}>Try Now</StyledButton>
-          </Box>
+            <Button
+              variant="contained"
+              onClick={() => navigate('/login')}
+              sx={{ backgroundColor: '#80D8C3', textTransform: 'none', fontWeight: 'bold', borderRadius: 8 }}
+            >
+              Try Now
+            </Button>
+          </Stack>
         </Toolbar>
       </AppBar>
 
-      <HeroSection>
-        <Typography
-          variant={isMobile ? 'h4' : 'h2'}
-          sx={{ fontWeight: '900', letterSpacing: 1, lineHeight: 1.2 }}
+      {/* Hero Section */}
+      <Container maxWidth="lg" sx={{ mt: 8, textAlign: 'center' }}>
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
         >
-          Doo
-          <Box component="span" sx={{ color: '#a5d6a7' }}>
-            Task
+          <Typography variant="h3" fontWeight="bold" gutterBottom>
+            Simplify Your Workflow with UETodoApp
+          </Typography>
+          <Typography variant="h6" color="text.secondary" mb={4}>
+            The ultimate task management tool built for students and professionals alike.
+          </Typography>
+          <Button
+            variant="outlined"
+            color="primary"
+            size="large"
+            onClick={() => navigate('/login')}
+            sx={{ borderRadius: 8, px: 4, fontWeight: 'bold' }}
+          >
+            Get Started
+          </Button>
+        </motion.div>
+
+        {/* Feature Images */}
+        {/* Feature Carousel Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 1 }}
+        >
+          <Box
+
+            sx={{
+              position: 'relative',
+              mt: 6,
+              height: '500px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }} >
+            {images.map((img, idx) => (
+              <motion.img
+                key={idx}
+                src={img}
+                alt={`feature-${idx}`}
+                style={{
+                  position: idx === currentImage ? 'relative' : 'absolute',
+                  opacity: idx === currentImage ? 1 : 0,
+                  transition: 'opacity 1s ease-in-out',
+                  width: '100%',
+                  maxWidth: 800,
+                  borderRadius: '16px',
+                  boxShadow: theme.shadows[4],
+                  margin: 'auto',
+                  display: 'block',
+                }}
+              />
+            ))}
           </Box>
-          , Lightweight task management tool
-        </Typography>
-        <Typography
-          variant={isMobile ? 'body1' : 'h6'}
-          sx={{ marginTop: 3, maxWidth: 600, marginX: 'auto', fontWeight: 500 }}
-        >
-          Lightweight open source online project task management tool to help teams
-          efficiently advance their projects and make work easier.
-        </Typography>
-        <Box sx={{ marginTop: 5 }}>
-          <StyledButton onClick={() => navigate('/get-started')}>Get Started</StyledButton>
-        </Box>
-      </HeroSection>
+        </motion.div>
 
-      <Container sx={{ textAlign: 'center', paddingY: 6, maxWidth: 1200 }}>
-        <img
-          src="/your-uploaded-image-path.png"
-          alt="Dashboard preview"
-          style={{
-            width: '100%',
-            borderRadius: 16,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
-          }}
-        />
       </Container>
-    </Box>
-  );
-};
 
-export default Home;
+      {/* Features Section */}
+      <Container maxWidth="md" sx={{ mt: 10, mb: 10 }}>
+        <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom>
+          Why Choose UETodoApp?
+        </Typography>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} mt={4}>
+          <FeatureCard
+            icon={<CheckCircleOutlineIcon fontSize="large" color="primary" />}
+            title="Organize Smarter"
+            description="Categorize, prioritize, and plan with intuitive task groups and deadlines."
+          />
+          <FeatureCard
+            icon={<TaskAltIcon fontSize="large" color="primary" />}
+            title="Stay Focused"
+            description="Focus mode and reminders keep your day productive and distraction-free."
+          />
+        </Stack>
+      </Container>
+    </Box >
+  )
+}
+
+const FeatureCard = ({ icon, title, description }) => {
+  return (
+    <Box
+      sx={{
+        flex: 1,
+        p: 3,
+        borderRadius: 3,
+        textAlign: 'center',
+        boxShadow: 3,
+        backgroundColor: 'background.paper',
+      }}
+    >
+      <Box mb={2}>{icon}</Box>
+      <Typography variant="h6" fontWeight="bold" gutterBottom>
+        {title}
+      </Typography>
+      <Typography variant="body1" color="text.secondary">
+        {description}
+      </Typography>
+    </Box>
+  )
+}
+
+export default Home

@@ -7,3 +7,4 @@ export {default as Calendar} from "./MainContent/Calendar"
 export {default as Profile} from "./User/Profile"
 export {default as ResetPassword} from "./User/ResetPassword"
 export {default as ResetPasswordForm} from "./User/ResetPasswordForm"
+export {default as About} from "./About";

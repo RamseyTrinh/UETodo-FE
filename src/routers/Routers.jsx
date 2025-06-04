@@ -13,6 +13,7 @@ function AppRoutes() {
         { path: PATHS.signup, element: <Pages.SignUp /> },
         { path: PATHS.resetPassword, element: <Pages.ResetPassword /> },
         { path: PATHS.resetPasswordForm, element: <Pages.ResetPasswordForm /> },
+        { path: PATHS.about, element: <Pages.About /> },
         {
             path: '/',
             element: <ThemeLayoutsSideBar />,

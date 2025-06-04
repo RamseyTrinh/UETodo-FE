@@ -15,6 +15,7 @@ import {
     Toolbar,
     Tooltip,
     useMediaQuery,
+    Divider,
     useTheme
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -24,6 +25,8 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getCurrentUserAction } from '@/stores/authAction.js'
+import { logout } from '@/services/auth.js';
+import { AccountCircle, Settings, Logout } from '@mui/icons-material'
 
 const drawerWidth = 240;
 
@@ -69,6 +72,19 @@ const ThemeLayoutsSideBar = () => {
             console.error('Error fetching current user:', error)
         }
     }
+
+    const handleLogout = async () => {
+
+        try {
+            await logout();
+            console.log('Logout successful');
+        } catch (error) {
+            console.error('Error during logout:', error);
+        } finally {
+            setCurrentUser({});
+            navigate('/');
+        }
+    };
 
     React.useEffect(() => {
         handleGetCurrentUser()
@@ -198,18 +214,59 @@ const ThemeLayoutsSideBar = () => {
                             vertical: 'top',
                             horizontal: 'right',
                         }}
-                        sx={{ mt: '45px' }}
+                        PaperProps={{
+                            elevation: 4,
+                            sx: {
+                                mt: '45px',
+                                borderRadius: 2,
+                                minWidth: 180,
+                                backgroundColor: theme => theme.palette.background.paper,
+                                boxShadow: theme =>
+                                    theme.palette.mode === 'light'
+                                        ? '0 2px 12px rgba(0,0,0,0.1)'
+                                        : '0 2px 12px rgba(255,255,255,0.1)',
+                            },
+                        }}
                     >
                         <MenuItem
                             onClick={() => {
-                                navigate('/profile');
-                                handleCloseUserMenu();
+                                navigate('/profile')
+                                handleCloseUserMenu()
                             }}
                         >
-                            Profile
+                            <ListItemIcon>
+                                <AccountCircle fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>Profile</ListItemText>
                         </MenuItem>
-                        <MenuItem onClick={handleCloseUserMenu}>Settings</MenuItem>
-                        <MenuItem onClick={handleCloseUserMenu}>Logout</MenuItem>
+
+                        <MenuItem onClick={handleCloseUserMenu}>
+                            <ListItemIcon>
+                                <Settings fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>Settings</ListItemText>
+                        </MenuItem>
+
+                        <Divider />
+
+                        <MenuItem
+                            onClick={() => {
+                                handleLogout()
+                                handleCloseUserMenu()
+                            }}
+                            sx={{
+                                color: 'error.main',
+                                '&:hover': {
+                                    bgcolor: 'error.light',
+                                    color: 'white',
+                                },
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: 'error.main' }}>
+                                <Logout fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>Logout</ListItemText>
+                        </MenuItem>
                     </Menu>
                 </Toolbar>
 
