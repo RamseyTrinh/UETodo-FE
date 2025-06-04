@@ -6,4 +6,6 @@ export const PATHS = {
     task: '/task',
     calendar: '/calendar',
     profile: '/profile',
+    resetPassword: '/reset-password',
+    resetPasswordForm: '/reset-password-form',
 }

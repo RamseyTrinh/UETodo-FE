@@ -13,13 +13,12 @@ import {
 
 const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
     const [error, setError] = useState(null)
-
     const [task, setTask] = useState({
         name: '',
         description: '',
         priority: 'High',
-        start_date: '',
-        due_date: '',
+        start_date: null,
+        due_date: null,
         user_id: null,
     })
 
@@ -38,7 +37,7 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
                 start_date: selectedDate,
             }))
         }
-    }, [])
+    }, [selectedDate])
 
     const handleChange = (field) => (e) => {
         setTask((prev) => ({
@@ -81,13 +80,21 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
         }))
     }
 
+    const handleOnClose = () => {
+        setError(null)
+        setTask({
+            name: '',
+            description: '',
+            priority: 'High',
+            start_date: null,
+            due_date: null,
+        })
+        onClose()
+    }
+
     const handleSubmit = () => {
         if (!task.name.trim() || !task.description.trim()) {
             setError('Name and description are required')
-            return
-        }
-        if (!task.start_date) {
-            setError('Start date is required')
             return
         }
         if (!task.due_date) {
@@ -104,14 +111,13 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
             setError('User ID is missing')
             return
         }
-        console.log('Task to create:', task)
         onCreate(task)
-        onClose()
+        handleOnClose()
     }
 
     return (
         <>
-            <Dialog open={open} onClose={onClose}>
+            <Dialog open={open} onClose={handleOnClose}>
                 <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>Add New Task</DialogTitle>
                 <DialogContent>
                     <TextField
@@ -167,7 +173,7 @@ const AskTask = ({ open, onClose, onCreate, selectedDate }) => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose} color='error'>Cancel</Button>
+                    <Button onClick={handleOnClose} color='error'>Cancel</Button>
                     <Button onClick={handleSubmit} variant='contained'>Add Task</Button>
                 </DialogActions>
             </Dialog>

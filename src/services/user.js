@@ -12,3 +12,7 @@ export const updateUser = async (userId, data) => {
 export const changePassword = async (userId, data) => {
     return (await http.put(USER_API.CHANGE_PASSWORD(userId), data))
 }
+
+export const updateNewPassword = async (data) => {
+    return (await http.post(USER_API.UPDATE_NEW_PASSWORD, data))
+}

@@ -11,6 +11,8 @@ function AppRoutes() {
         { path: PATHS.home, element: <Pages.Home /> },
         { path: PATHS.login, element: <Pages.Login /> },
         { path: PATHS.signup, element: <Pages.SignUp /> },
+        { path: PATHS.resetPassword, element: <Pages.ResetPassword /> },
+        { path: PATHS.resetPasswordForm, element: <Pages.ResetPasswordForm /> },
         {
             path: '/',
             element: <ThemeLayoutsSideBar />,

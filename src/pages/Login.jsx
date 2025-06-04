@@ -166,17 +166,9 @@ const LoginPage = () => {
                                     </IconButton>
                                 </InputAdornment>
                             ),
-                            // Không cần style: { color: '#FFFFFF' } ở đây nữa
                         }}
-                        InputLabelProps={
-                            {
-                                // Không cần style: { color: '#B0B0B0' } ở đây nữa
-                            }
-                        }
                         sx={{
                             mb: 3,
-                            // Loại bỏ các override về màu border, input text, label text
-                            // Material-UI sẽ tự động sử dụng màu từ theme.components.MuiTextField đã định nghĩa
                         }}
                         required
                     />

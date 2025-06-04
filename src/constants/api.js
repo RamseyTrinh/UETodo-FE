@@ -2,9 +2,8 @@ export const AUTH_API = {
     LOGIN: '/auth/login',
     LOGOUT: '/auth/logout',
     REGISTER: '/auth/register',
-    FORGOT_PASSWORD: '/auth/forgot-password',
-    RESEND_CONFIRMATION: '/auth/resend-confirmation',
-    CONFIRM_REGISTRATION: '/auth/confirm-registration',
+    RESET_PASSWORD: '/auth/reset-password',
+    VERIFY_CODE: '/auth/verify-reset-code',
 }
 
 export const USER_API = {
@@ -12,6 +11,7 @@ export const USER_API = {
     GET_USER: (userId) => `/user/${userId}`,
     UPDATE_USER: (userId) => `/user/${userId}`,
     CHANGE_PASSWORD: (userId) => `/user/${userId}/password`,
+    UPDATE_NEW_PASSWORD: '/user/update-new-password',
 }
 
 export const TASK_API = {

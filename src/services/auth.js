@@ -16,3 +16,11 @@ export const logout = async () => {
 export const register = async (payload) => {
     return await http.post(AUTH_API.REGISTER, payload);
 };
+
+export const resetPassword = async (payload) => {
+    return await http.post(AUTH_API.RESET_PASSWORD, payload);
+}
+
+export const verifyCode = async (payload) => {
+    return await http.post(AUTH_API.VERIFY_CODE, payload);
+}
