@@ -1,9 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import AddTask from '../../components/AddTask'
-import { Box, Paper, useTheme, Alert, Snackbar } from '@mui/material'
+import {
+  Box,
+  Paper,
+  useTheme,
+  Alert,
+  Snackbar,
+  useMediaQuery,
+} from '@mui/material'
 
 import { createTask, getTasksByUserId } from '@/services/task'
 import { getCurrentUserAction } from '@/stores/authAction.js'
@@ -11,13 +18,14 @@ import { useDispatch } from 'react-redux'
 
 const Calendar = () => {
   const dispatch = useDispatch()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState('')
   const [events, setEvents] = useState([])
   const [alert, setAlert] = useState({})
   const [currentUser, setCurrentUser] = useState({})
-
-  const theme = useTheme()
 
   const handleDateClick = (info) => {
     setSelectedDate(info.dateStr)
@@ -28,10 +36,7 @@ const Calendar = () => {
     try {
       const response = await createTask(task)
       if (response?.success) {
-        setAlert({
-          mssg: `Task created successfully!`,
-          type: 'success',
-        })
+        setAlert({ mssg: 'Task created successfully!', type: 'success' })
         setModalOpen(false)
         handleListTask()
       }
@@ -49,8 +54,7 @@ const Calendar = () => {
 
       const calendarEvents = tasksData.map((task) => ({
         id: task.id,
-        title:
-          task.status === true ? `[Completed] ${task.name}` : task.name,
+        title: task.status === true ? `[Completed] ${task.name}` : task.name,
         date: task.start_date,
       }))
 
@@ -69,25 +73,27 @@ const Calendar = () => {
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     handleGetCurrentUser()
   }, [])
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (currentUser?.id) {
       handleListTask()
     }
   }, [currentUser?.id])
 
   return (
-    <>
+    <Box sx={{ px: { xs: 1, sm: 3 }, py: 2 }}>
       <Paper
         elevation={3}
         sx={{
-          p: 2,
+          p: { xs: 1, sm: 2 },
           bgcolor: theme.palette.background.paper,
           color: theme.palette.text.primary,
           borderRadius: 2,
+          width: '100%',
+          overflowX: 'auto',
         }}
       >
         <FullCalendar
@@ -97,13 +103,15 @@ const Calendar = () => {
           events={events}
           height="auto"
           contentHeight="auto"
-          aspectRatio={1.5}
+          aspectRatio={isMobile ? 0.75 : 1.5}
+          windowResize={true}
+          handleWindowResize={true}
           headerToolbar={{
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,dayGridWeek,dayGridDay',
           }}
-          dayMaxEvents={10}
+          dayMaxEvents={5}
           fixedWeekCount={false}
           dayCellClassNames={({ date }) => {
             const classes = ['fc-daycell']
@@ -113,10 +121,8 @@ const Calendar = () => {
             return classes
           }}
           dayCellContent={({ date }) => {
-            const isToday =
-              date.toDateString() === new Date().toDateString()
+            const isToday = date.toDateString() === new Date().toDateString()
             const day = date.getDay()
-
             return (
               <div
                 style={{
@@ -151,7 +157,6 @@ const Calendar = () => {
           eventContent={({ event }) => {
             const title = event.title
             const isCompleted = title.includes('[Completed]')
-
             return (
               <div
                 style={{
@@ -167,7 +172,10 @@ const Calendar = () => {
                   padding: '2px 6px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 6,
+                  flexWrap: 'wrap',
+                  gap: 4,
+                  wordBreak: 'break-word',
+                  maxWidth: '100%',
                 }}
               >
                 {isCompleted && (
@@ -197,26 +205,28 @@ const Calendar = () => {
 
         <style>
           {`
-            /* General Calendar Styling */
             .fc {
               font-family: ${theme.typography.fontFamily};
               color: ${theme.palette.text.primary};
             }
 
-            /* Header Toolbar */
             .fc .fc-toolbar {
               background-color: ${theme.palette.background.paper};
               border-radius: ${theme.shape?.borderRadius || 8}px;
               padding: ${theme.spacing(1.5)};
               margin-bottom: ${theme.spacing(2)};
+              flex-wrap: wrap;
+              gap: 8px;
             }
 
             .fc .fc-button {
               background-color: ${theme.palette.background.paper};
               color: ${theme.palette.text.primary};
-              border: 1px solid ${theme.palette.divider || '#ddd'};
+              border: 1px solid ${theme.palette.divider};
               box-shadow: none;
               text-transform: none;
+              padding: 4px 8px;
+              font-size: 0.875rem;
             }
 
             .fc .fc-button:hover {
@@ -224,34 +234,30 @@ const Calendar = () => {
               border-color: ${theme.palette.action.hover};
             }
 
-            .fc .fc-button.fc-button-active {
-                background-color: ${theme.palette.primary.main} !important;
-                color: ${theme.palette.primary.contrastText} !important;
-                border-color: ${theme.palette.primary.main} !important;
-                box-shadow: none !important;
+            .fc .fc-button.fc-button-active,
+            .fc .fc-button.fc-today-button {
+              background-color: ${theme.palette.primary.main} !important;
+              color: ${theme.palette.primary.contrastText} !important;
+              border-color: ${theme.palette.primary.main} !important;
+              box-shadow: none !important;
             }
 
-            .fc .fc-toolbar-title {
-              color: ${theme.palette.text.primary};
+            .fc .fc-button.fc-today-button:hover {
+              background-color: ${theme.palette.primary.dark} !important;
+              border-color: ${theme.palette.primary.dark} !important;
             }
 
-            /* Calendar Body (Table) */
-            .fc-theme-standard .fc-scrollgrid {
-              border-color: ${theme.palette.divider || '#ddd'};
-            }
-
+            .fc-theme-standard .fc-scrollgrid,
             .fc-theme-standard td,
             .fc-theme-standard th {
-              border-color: ${theme.palette.divider || '#ddd'};
+              border-color: ${theme.palette.divider};
             }
 
-            /* Day Headers */
             .fc-col-header-cell {
               background-color: ${theme.palette.background.paper};
               color: ${theme.palette.text.secondary};
             }
 
-            /* Day Cells */
             .fc-daygrid-day {
               background-color: ${theme.palette.background.default};
             }
@@ -264,7 +270,6 @@ const Calendar = () => {
               color: ${theme.palette.text.disabled};
             }
 
-            /* Weekend day numbers */
             .fc-sunday .fc-daygrid-day-number {
               color: ${theme.palette.error.main} !important;
             }
@@ -273,7 +278,6 @@ const Calendar = () => {
               color: ${theme.palette.success.main} !important;
             }
 
-            /* Event Styling */
             .event-custom {
               padding: 0 !important;
               background-color: transparent !important;
@@ -281,30 +285,14 @@ const Calendar = () => {
               cursor: pointer;
             }
 
-            .fc-event-title {
-              font-weight: 500;
-            }
-
-            /* Hover states for cells */
             .fc-daygrid-day:hover {
               background-color: ${theme.palette.action.hover};
               cursor: pointer;
             }
-            
+
             .fc .fc-col-header-cell-cushion {
               color: ${theme.palette.text.primary} !important;
             }
-            .fc .fc-button.fc-today-button {
-                background-color: ${theme.palette.primary.main} !important;
-                color: ${theme.palette.primary.contrastText} !important;
-                border-color: ${theme.palette.primary.main} !important;
-                box-shadow: none !important;
-            }
-            .fc .fc-button.fc-today-button:hover {
-                background-color: ${theme.palette.primary.dark} !important;
-                border-color: ${theme.palette.primary.dark} !important;
-            }import AddTask from './../../components/AddTask';
-
           `}
         </style>
       </Paper>
@@ -324,7 +312,7 @@ const Calendar = () => {
           {alert.mssg}
         </Alert>
       </Snackbar>
-    </>
+    </Box>
   )
 }
 

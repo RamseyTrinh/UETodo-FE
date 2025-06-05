@@ -217,7 +217,7 @@ const Product = () => {
             variant="contained"
             size="large"
             onClick={() => navigate('/login')}
-            sx={{ textTransform: 'none', px: 5, py: 1.5 }}
+            sx={{ textTransform: 'none', px: 5, py: 1.5, mb:3 }}
           >
             Get Started Now
           </Button>
