@@ -88,7 +88,7 @@ const Product = () => {
             <Card sx={{ borderRadius: 4, boxShadow: 6 }}>
               <CardMedia
                 component="img"
-                image="/src/assets/dashboard.jpg"
+                image="/public/dashboard.jpg"
                 alt="Dashboard Screenshot"
                 sx={{ height: 310, objectFit: 'cover' }}
               />
@@ -144,7 +144,7 @@ const Product = () => {
             <Card sx={{ borderRadius: 4, boxShadow: 6 }}>
               <CardMedia
                 component="img"
-                image="/src/assets/taskview.jpg"
+                image="/public/taskview.jpg"
                 alt="Task View Screenshot"
                 sx={{ height: 310, objectFit: 'cover' }}
               />
@@ -170,7 +170,7 @@ const Product = () => {
             <Card sx={{ borderRadius: 4, boxShadow: 6 }}>
               <CardMedia
                 component="img"
-                image="/src/assets/calendar.jpg"
+                image="/public/calendar.jpg"
                 alt="Calendar View Screenshot"
                 sx={{ height: 300, objectFit: 'cover' }}
               />
