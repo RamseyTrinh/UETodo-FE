@@ -9,8 +9,10 @@ import {
   CardMedia,
   CardContent,
   useTheme,
+  AppBar,
+  Toolbar,
+  Stack,
 } from '@mui/material'
-import { Home } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
@@ -19,49 +21,48 @@ const Product = () => {
   const navigate = useNavigate()
 
   return (
-    <Box sx={{ minHeight: '100vh', px: 3 }}>
+    <Box >
       {/* Header */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
+      <AppBar position="static" color="default" elevation={2} sx={{
+        backgroundColor: '#2196F3', mb: 4,
+      }}
       >
-        <Button
-          variant="text"
-          startIcon={<Home />}
-          onClick={() => navigate('/')}
-          sx={{
-            color: theme.palette.primary.dark,
-            fontSize: '1.2rem',
-            fontWeight: 'bold',
-            textTransform: 'none',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              textDecoration: 'underline',
-            },
-          }}
-        >
-          UETodo
-        </Button>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 'bold', color: theme.palette.primary.contrastText, cursor: 'pointer' }}
+            onClick={() => navigate('/')}
+          >
+            UETodoApp
+          </Typography>
 
-        <Button
-          variant="contained"
-          onClick={() => navigate('/login')}
-          sx={{
-            textTransform: 'none',
-            fontWeight: 'bold',
-            borderRadius: 3,
-            boxShadow: 3,
-          }}
-        >
-          Get Started
-        </Button>
-      </Box>
+          <Stack direction="row" spacing={2}>
+            <Button
+              color="primary"
+              onClick={() => navigate('/product')}
+              sx={{ fontWeight: 'bold', color: theme.palette.primary.contrastText, cursor: 'pointer' }}
+            >
+              Product
+            </Button>
+            <Button
+              color="primary"
+              onClick={() => navigate('/about')}
+              sx={{ fontWeight: 'bold', color: theme.palette.primary.contrastText, cursor: 'pointer' }}
+            >
+              About Us
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => navigate('/login')}
+              sx={{ backgroundColor: '#80D8C3', fontWeight: 'bold', borderRadius: 8, px: 3, color: '#333446', '&:hover': { backgroundColor: '#64B5F6' } }}
+            >
+              Get started
+            </Button>
+          </Stack>
+        </Toolbar>
+      </AppBar>
 
-      <Divider sx={{ mb: 4, borderColor: theme.palette.primary.light }} />
-
+      <Box sx={{ maxWidth: 1200, mx: 'auto', px: 3, py: 6 }}>
       {/* Introduction */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -217,12 +218,13 @@ const Product = () => {
             variant="contained"
             size="large"
             onClick={() => navigate('/login')}
-            sx={{ textTransform: 'none', px: 5, py: 1.5, mb:3 }}
+            sx={{ textTransform: 'none', px: 5, py: 1.5, mb: 3 }}
           >
             Get Started Now
           </Button>
         </Box>
       </motion.div>
+      </Box>
     </Box>
   )
 }
