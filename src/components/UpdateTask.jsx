@@ -68,16 +68,18 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
     }
 
     const handleSubmit = () => {
-        if (!task.due_date) {
-            setError('Due date is required')
-            return
-        }
-
         if (!task.name.trim() || !task.description.trim()) {
             setError('Name and description are required')
             return
         }
-
+        if (!task.start_date) {
+            setError('Start date is required')
+            return
+        }
+        if (!task.due_date) {
+            setError('Due date is required')
+            return
+        }
         if (!task.user_id) {
             setError('User ID is missing')
             return

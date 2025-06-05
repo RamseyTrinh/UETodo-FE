@@ -21,7 +21,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { updateUser, changePassword } from '@/services/user.js';
 
-const settingsMenu = ['Personal settings', 'Password settings', 'Change email'];
+const settingsMenu = ['Personal settings', 'Password settings'];
 
 const ProfileSettings = () => {
   const dispatch = useDispatch();
@@ -49,7 +49,6 @@ const ProfileSettings = () => {
   const [alertMessage, setAlertMessage] = React.useState('');
   const [selectedTab, setSelectedTab] = React.useState('Personal settings');
 
-  // Hàm showAlert: đóng alert trước rồi mở alert mới
   const showAlert = (severity, message) => {
     setAlertOpen(false);
     setTimeout(() => {
@@ -169,7 +168,7 @@ const ProfileSettings = () => {
               </ListItem>
             ))}
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-              Version: 1.0.37
+              Version: 1.3.38
             </Typography>
           </List>
         </Box>
