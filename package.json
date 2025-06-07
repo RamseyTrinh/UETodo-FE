@@ -22,7 +22,6 @@
     "@mui/styles": "^6.1.10",
     "@mui/x-charts": "^8.4.0",
     "@reduxjs/toolkit": "^2.3.0",
-    "@toolpad/core": "^0.15.0",
     "axios": "^1.7.9",
     "framer-motion": "^12.16.0",
     "i18next": "^25.2.1",
