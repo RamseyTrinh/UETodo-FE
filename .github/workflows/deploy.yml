@@ -21,6 +21,8 @@ jobs:
             cd ${{secrets.PROJECT_DIR}}
             git fetch --all
             git reset --hard origin/main
-            npm install
+            which npm
+            echo "Installing dependencies and building project..."
+            pwd
+            /home/hoangkmhd190/.nvm/versions/node/v16.16.0/bin/npm install
             npm run build
-            
