@@ -21,9 +21,6 @@ jobs:
             cd ${{secrets.PROJECT_DIR}}
             git fetch --all
             git reset --hard origin/main
-            which npm
-            echo "Installing dependencies and building project..."
-            pwd
-            /home/hoangkmhd190/.nvm/versions/node/v16.16.0/bin/npm install --force
-            echo "Running build script..."
-            /home/hoangkmhd190/.nvm/versions/node/v16.16.0/bin/npm run build
+            docker compose down
+            docker compose up -d --build
+            
