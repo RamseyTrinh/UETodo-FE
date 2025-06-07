@@ -24,5 +24,6 @@ jobs:
             which npm
             echo "Installing dependencies and building project..."
             pwd
-            /home/hoangkmhd190/.nvm/versions/node/v16.16.0/bin/npm install
-            npm run build
+            /home/hoangkmhd190/.nvm/versions/node/v16.16.0/bin/npm install --force
+            echo "Running build script..."
+            /home/hoangkmhd190/.nvm/versions/node/v16.16.0/bin/npm run build
