@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  uetodo-FE:
+    build:
+      context: .
+    restart: on-failure
+    
+    volumes:
+      - /home/hoangkmhd190/uetodo/UETodo-FE/dist:/app/UETodo-FE/dist
