@@ -87,7 +87,7 @@ const AboutUs = () => {
                             >
                                 <Avatar
                                     alt="Ramsey Trinh"
-                                    src="/public/avatar_image.jpg"
+                                    src="/avatar_image.jpg"
                                     sx={{
                                         width: 120,
                                         height: 120,

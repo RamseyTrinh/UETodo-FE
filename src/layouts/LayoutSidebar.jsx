@@ -240,7 +240,11 @@ const LayoutSidebar = () => {
                             <ListItemText>Profile</ListItemText>
                         </MenuItem>
 
-                        <MenuItem onClick={handleCloseUserMenu}>
+                        <MenuItem onClick={() => {
+                            navigate('/setting')
+                            handleCloseUserMenu()
+                        }}
+                        >
                             <ListItemIcon>
                                 <Settings fontSize="small" />
                             </ListItemIcon>

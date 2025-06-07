@@ -23,6 +23,8 @@ function AppRoutes() {
                 { path: PATHS.task, element: <Pages.Task /> },
                 { path: PATHS.calendar, element: <Pages.Calendar /> },
                 { path: PATHS.profile, element: <Pages.Profile /> },
+                { path: PATHS.setting, element: <Pages.Setting /> },
+
             ],
         },
 

@@ -9,3 +9,4 @@ export {default as ResetPassword} from "./User/ResetPassword"
 export {default as ResetPasswordForm} from "./User/ResetPasswordForm"
 export {default as About} from "./About";
 export {default as Product} from "./Product";
+export {default as Setting} from "./User/Setting";
