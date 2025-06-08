@@ -12,33 +12,10 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import dayjs from 'dayjs'
-import UpdateTask from '@/components/UpdateTask'
-import { updateTask, deleteTask } from '@/services/task'
 
 
-
-const TaskRow = ({ task, onToggleStatus, completed, onRefresh }) => {
+const TaskRow = ({ task, onToggleStatus, completed, onEdit, onDeleteTask }) => {
     const theme = useTheme()
-    const [showEdit, setShowEdit] = React.useState(false)
-
-    const handleDelete = async () => {
-        try {
-            await deleteTask(task.id)
-            onRefresh?.()
-        } catch (err) {
-            console.error(err)
-        }
-    }
-
-    const handleUpdate = async (updatedTask) => {
-        try {
-            await updateTask(task.id, updatedTask)
-            setShowEdit(false)
-            onRefresh?.()
-        } catch (err) {
-            console.error(err)
-        }
-    }
 
     return (
         <>
@@ -80,14 +57,14 @@ const TaskRow = ({ task, onToggleStatus, completed, onRefresh }) => {
                                 task.priority === 'High'
                                     ? theme.palette.error.light
                                     : task.priority === 'Medium'
-                                      ? theme.palette.warning.light
-                                      : theme.palette.info.light,
+                                        ? theme.palette.warning.light
+                                        : theme.palette.info.light,
                             color:
                                 task.priority === 'High'
                                     ? theme.palette.error.contrastText
                                     : task.priority === 'Medium'
-                                      ? theme.palette.warning.contrastText
-                                      : theme.palette.info.contrastText,
+                                        ? theme.palette.warning.contrastText
+                                        : theme.palette.info.contrastText,
                             textTransform: 'none',
                             borderRadius: 1,
                             px: 1,
@@ -115,18 +92,15 @@ const TaskRow = ({ task, onToggleStatus, completed, onRefresh }) => {
                 >
                     {!completed && (
                         <>
-                        <IconButton onClick={() => setShowEdit(true)}><EditIcon /></IconButton>
-                        <IconButton color="error" onClick={handleDelete}><DeleteIcon /></IconButton>
+                            <IconButton onClick={() => onEdit(task)}><EditIcon /></IconButton>
+                            <IconButton color="error" onClick={onDeleteTask}>
+                                <DeleteIcon />
+                            </IconButton>
+
                         </>
                     )}
                 </Box>
             </ListItem>
-            <UpdateTask
-                editTask={task}
-                open={showEdit}
-                onClose={() => setShowEdit(false)}
-                onUpdate={handleUpdate}
-            />
         </>
     )
 }

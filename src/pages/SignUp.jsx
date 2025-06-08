@@ -9,24 +9,30 @@ import {
     TextField,
     Typography,
     useTheme,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    FormLabel
 } from '@mui/material'
-import { Radio, RadioGroup, FormControlLabel, FormLabel } from '@mui/material'
-
 import {
     LockOutlined,
     PersonOutline,
     Visibility,
     VisibilityOff,
     EmailOutlined,
+    Phone as PhoneIcon
 } from '@mui/icons-material'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { useNavigate, Link } from 'react-router-dom'
+import dayjs from 'dayjs'
+
 import { PATHS } from '@/routers/path'
 import { register } from '@/services/auth'
-import { Link } from 'react-router-dom'
-import { Phone as PhoneIcon } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
 
 const RegisterPage = () => {
     const navigate = useNavigate()
+    const theme = useTheme()
+
     const [passwordVisible, setPasswordVisible] = useState(false)
     const [submitLoading, setSubmitLoading] = useState(false)
     const [error, setError] = useState('')
@@ -41,10 +47,16 @@ const RegisterPage = () => {
         phone_number: '',
     })
 
-    const theme = useTheme() // Use the useTheme hook
+    const handleChange = (prop) => (e) => {
+        const value = e?.target?.value ?? e
+        setValues((prev) => ({ ...prev, [prop]: value }))
+    }
 
-    const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value })
+    const handleDateChange = (date) => {
+        setValues((prev) => ({
+            ...prev,
+            dob: date ? date.format('YYYY-MM-DD') : '',
+        }))
     }
 
     const handleSubmit = async (event) => {
@@ -61,21 +73,12 @@ const RegisterPage = () => {
 
         try {
             const response = await register(values)
-            if (response.status === 200) {
-                console.log('Registration successful with:', values)
-
+            if (response.status === 201) {
                 setSuccess('Registration successful! Redirecting to login...')
-                setTimeout(() => {
-                    navigate(PATHS.login)
-                }, 2000)
+                setTimeout(() => navigate(PATHS.login), 2000)
             }
         } catch (e) {
-            console.error('Registration error:', e)
-            console.error(e)
-            setError(
-                e.response.data.message ||
-                    'Registration failed. Please try again.'
-            )
+            setError(e.response?.data?.message || 'Registration failed. Please try again.')
         } finally {
             setSubmitLoading(false)
         }
@@ -89,46 +92,28 @@ const RegisterPage = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 minHeight: '100vh',
-                backgroundColor: theme.palette.background.default, // Use theme background color
+                backgroundColor: theme.palette.background.default,
             }}
         >
             <Card
                 sx={{
-                    width: '400px',
-                    padding: 4,
+                    width: 400,
+                    p: 4,
                     textAlign: 'center',
-                    backgroundColor: theme.palette.background.paper, // Use theme paper color
                     borderRadius: 2,
                     boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.5)',
+                    backgroundColor: theme.palette.background.paper,
                 }}
             >
-                <Typography
-                    variant="h5"
-                    sx={{
-                        mb: 1,
-                        color: theme.palette.text.primary,
-                        fontWeight: 'bold',
-                    }}
-                >
+                <Typography variant="h5" fontWeight="bold" mb={1}>
                     Create an account
                 </Typography>
-                <Typography
-                    variant="body2"
-                    sx={{ mb: 3, color: theme.palette.text.secondary }}
-                >
+                <Typography variant="body2" color="text.secondary" mb={3}>
                     Fill in your details to create a new account.
                 </Typography>
 
-                {error && (
-                    <Alert severity="error" sx={{ mb: 2 }}>
-                        {error}
-                    </Alert>
-                )}
-                {success && (
-                    <Alert severity="success" sx={{ mb: 2 }}>
-                        {success}
-                    </Alert>
-                )}
+                {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+                {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
 
                 <form onSubmit={handleSubmit}>
                     <TextField
@@ -136,28 +121,23 @@ const RegisterPage = () => {
                         label="Name"
                         placeholder="Enter your name"
                         variant="outlined"
-                        value={values.username}
+                        value={values.name}
                         onChange={handleChange('name')}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <PersonOutline
-                                        sx={{
-                                            color: theme.palette.text.secondary,
-                                        }}
-                                    />
+                                    <PersonOutline color="action" />
                                 </InputAdornment>
                             ),
                         }}
-                        InputLabelProps={{}}
-                        sx={{
-                            mb: 2,
-                        }}
+                        sx={{ mb: 2 }}
                         required
                     />
+
                     <TextField
                         fullWidth
                         label="Email"
+                        type="email"
                         placeholder="Enter your email"
                         variant="outlined"
                         value={values.email}
@@ -165,96 +145,52 @@ const RegisterPage = () => {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <EmailOutlined
-                                        sx={{
-                                            color: theme.palette.text.secondary,
-                                        }}
-                                    />
-                                    {/* Changed to EmailOutlined */}
-                                </InputAdornment>
-                            ),
-                        }}
-                        InputLabelProps={{}}
-                        sx={{
-                            mb: 2,
-                        }}
-                        required
-                        type="email"
-                    />
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            mb: 2,
-                        }}
-                    >
-                        <FormLabel
-                            component="legend"
-                            sx={{
-                                minWidth: 80, // Đặt độ rộng tối thiểu cho label
-                                mr: 2,
-                            }}
-                        >
-                            Gender
-                        </FormLabel>
-                        <RadioGroup
-                            row
-                            value={values.gender}
-                            onChange={handleChange('gender')}
-                            name="gender"
-                        >
-                            <FormControlLabel
-                                value="male"
-                                control={<Radio />}
-                                label="Male"
-                            />
-                            <FormControlLabel
-                                value="female"
-                                control={<Radio />}
-                                label="Female"
-                            />
-                        </RadioGroup>
-                    </Box>
-
-                    <TextField
-                        fullWidth
-                        label="Date of Birth"
-                        placeholder="dd/mm/yyyy"
-                        variant="outlined"
-                        value={values.dob}
-                        onChange={handleChange('dob')}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <PersonOutline
-                                        sx={{
-                                            color: theme.palette.text.secondary,
-                                        }}
-                                    />
+                                    <EmailOutlined color="action" />
                                 </InputAdornment>
                             ),
                         }}
                         sx={{ mb: 2 }}
                         required
-                        type="date"
-                        InputLabelProps={{ shrink: true }}
                     />
+
+                    <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+                        <FormLabel sx={{ minWidth: 80, mr: 2 }}>Gender</FormLabel>
+                        <RadioGroup
+                            row
+                            value={values.gender}
+                            onChange={handleChange('gender')}
+                        >
+                            <FormControlLabel value="male" control={<Radio />} label="Male" />
+                            <FormControlLabel value="female" control={<Radio />} label="Female" />
+                        </RadioGroup>
+                    </Box>
+
+                    <DatePicker
+                        label="Date of Birth"
+                        value={values.dob ? dayjs(values.dob) : null}
+                        onChange={handleDateChange}
+                        format="DD/MM/YYYY"
+                        slotProps={{
+                            textField: {
+                                fullWidth: true,
+                                variant: 'outlined',
+                                required: true,
+                                sx: { mb: 2 },
+                            }
+                        }}
+                    />
+
                     <TextField
                         fullWidth
                         label="Phone Number"
                         placeholder="Enter your phone number"
                         variant="outlined"
-                        value={values.phone}
+                        value={values.phone_number}
                         onChange={handleChange('phone_number')}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <PhoneIcon
-                                        sx={{
-                                            color: theme.palette.text.secondary,
-                                        }}
-                                    />
+                                    <PhoneIcon color="action" />
                                 </InputAdornment>
                             ),
                         }}
@@ -274,39 +210,24 @@ const RegisterPage = () => {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <LockOutlined
-                                        sx={{
-                                            color: theme.palette.text.secondary,
-                                        }}
-                                    />
+                                    <LockOutlined color="action" />
                                 </InputAdornment>
                             ),
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <IconButton
-                                        onClick={() =>
-                                            setPasswordVisible(!passwordVisible)
-                                        }
+                                        onClick={() => setPasswordVisible(!passwordVisible)}
                                         edge="end"
-                                        sx={{
-                                            color: theme.palette.text.secondary,
-                                        }}
                                     >
-                                        {passwordVisible ? (
-                                            <Visibility />
-                                        ) : (
-                                            <VisibilityOff />
-                                        )}
+                                        {passwordVisible ? <Visibility /> : <VisibilityOff />}
                                     </IconButton>
                                 </InputAdornment>
                             ),
                         }}
-                        InputLabelProps={{}}
-                        sx={{
-                            mb: 2,
-                        }}
+                        sx={{ mb: 2 }}
                         required
                     />
+
                     <TextField
                         fullWidth
                         label="Confirm Password"
@@ -318,39 +239,24 @@ const RegisterPage = () => {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <LockOutlined
-                                        sx={{
-                                            color: theme.palette.text.secondary,
-                                        }}
-                                    />
+                                    <LockOutlined color="action" />
                                 </InputAdornment>
                             ),
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <IconButton
-                                        onClick={() =>
-                                            setPasswordVisible(!passwordVisible)
-                                        }
+                                        onClick={() => setPasswordVisible(!passwordVisible)}
                                         edge="end"
-                                        sx={{
-                                            color: theme.palette.text.secondary,
-                                        }}
                                     >
-                                        {passwordVisible ? (
-                                            <Visibility />
-                                        ) : (
-                                            <VisibilityOff />
-                                        )}
+                                        {passwordVisible ? <Visibility /> : <VisibilityOff />}
                                     </IconButton>
                                 </InputAdornment>
                             ),
                         }}
-                        InputLabelProps={{}}
-                        sx={{
-                            mb: 3,
-                        }}
+                        sx={{ mb: 3 }}
                         required
                     />
+
                     <Button
                         type="submit"
                         variant="contained"
@@ -359,13 +265,8 @@ const RegisterPage = () => {
                         disabled={submitLoading}
                         sx={{
                             mb: 2,
-                            backgroundColor: theme.palette.primary.main, // Green background from theme
-                            '&:hover': {
-                                backgroundColor: theme.palette.primary.dark, // Darker green on hover
-                            },
-                            color: theme.palette.primary.contrastText, // White text
-                            fontWeight: 'bold',
                             textTransform: 'none',
+                            fontWeight: 'bold',
                             py: 1.5,
                         }}
                     >
@@ -373,38 +274,18 @@ const RegisterPage = () => {
                     </Button>
                 </form>
 
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        mt: 2,
-                    }}
-                >
-                    <Typography
-                        variant="body2"
-                        sx={{ color: theme.palette.text.secondary }}
+                <Typography variant="body2" mt={2}>
+                    Already have an account?{' '}
+                    <Link
+                        to={PATHS.login}
+                        style={{
+                            textDecoration: 'none',
+                            color: theme.palette.primary.main,
+                        }}
                     >
-                        Already have an account?{' '}
-                        <Link
-                            to={PATHS.login}
-                            size="small"
-                            variant="text"
-                            sx={{
-                                textTransform: 'none',
-                                p: 0,
-                                color: theme.palette.primary.main, // Green color for the link from theme
-                                '&:hover': {
-                                    backgroundColor: 'transparent',
-                                    textDecoration: 'underline',
-                                    color: theme.palette.primary.dark,
-                                },
-                            }}
-                        >
-                            Login
-                        </Link>
-                    </Typography>
-                </Box>
+                        Login
+                    </Link>
+                </Typography>
             </Card>
         </Box>
     )

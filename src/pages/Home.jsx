@@ -15,8 +15,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import ScheduleIcon from '@mui/icons-material/Schedule'
 import BarChartIcon from '@mui/icons-material/BarChart'
-import GroupIcon from '@mui/icons-material/Group'
-import store from './../stores/index';
+
 
 const Home = () => {
   const theme = useTheme()

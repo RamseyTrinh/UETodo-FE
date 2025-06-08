@@ -7,13 +7,17 @@ import store from './stores';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles'
 import theme from '@/themes/theme'
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
         <ThemeProvider theme={theme}>
         <BrowserRouter> 
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
           <App />
+        </LocalizationProvider>
         </BrowserRouter>
         </ThemeProvider>
     </Provider>

@@ -1,39 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import {
-    Box,
-    Typography,
-    List,
-    ListItem,
-    Toolbar,
-    useTheme,
-    IconButton,
-    Button,
-    Card,
-    CardContent,
-    Collapse,
-    Alert,
-    Snackbar,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    TablePagination,
+    Box, Typography, List, ListItem, Toolbar, useTheme, IconButton, Button,
+    Card, CardContent, Collapse, Alert, Snackbar, Table, TableBody,
+    TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination,
+    Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import SearchIcon from '@mui/icons-material/Search'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import BackupTableIcon from '@mui/icons-material/BackupTable'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+
 import AddTask from '@/components/AddTask'
 import TaskRow from '@/components/TaskRow'
-import { createTask, getTasksByUserId, updateTask } from '@/services/task'
+import UpdateTask from '@/components/UpdateTask'
+import { createTask, getTasksByUserId, updateTask, deleteTask } from '@/services/task'
 import { useDispatch } from 'react-redux'
 import { getCurrentUserAction } from '@/stores/authAction.js'
 import dayjs from 'dayjs'
@@ -41,6 +25,7 @@ import dayjs from 'dayjs'
 const Task = () => {
     const theme = useTheme()
     const dispatch = useDispatch()
+
     const [user, setUser] = useState({})
     const [expandedTasks, setExpandedTasks] = useState(true)
     const [expandedCompleted, setExpandedCompleted] = useState(true)
@@ -49,7 +34,43 @@ const Task = () => {
     const [alert, setAlert] = useState({})
     const [viewMode, setViewMode] = useState('list')
     const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(5)
+    const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [editingTask, setEditingTask] = useState(null)
+    const [showEditDialog, setShowEditDialog] = useState(false)
+    const [confirmDelete, setConfirmDelete] = useState({ open: false, taskId: null })
+
+    const handleEditClick = (task) => {
+        setEditingTask(task)
+        setShowEditDialog(true)
+    }
+
+    const handleConfirmDelete = (taskId) => {
+        setConfirmDelete({ open: true, taskId })
+    }
+
+    const handleDeleteTask = async () => {
+        try {
+            await deleteTask(confirmDelete.taskId)
+            setConfirmDelete({ open: false, taskId: null })
+            handleListTask()
+            setAlert({ mssg: 'Task deleted successfully!', type: 'success' })
+        } catch (error) {
+            console.error(error)
+            setAlert({ mssg: 'Failed to delete task.', type: 'error' })
+        }
+    }
+
+    const handleUpdateTask = async (updatedTask) => {
+        try {
+            await updateTask(updatedTask.id, updatedTask)
+            setAlert({ mssg: 'Task updated successfully!', type: 'success' })
+            handleListTask()
+            setShowEditDialog(false)
+        } catch (err) {
+            console.error(err)
+            setAlert({ mssg: 'Failed to update task.', type: 'error' })
+        }
+    }
 
     const handleCreateTask = async (task) => {
         try {
@@ -112,9 +133,7 @@ const Task = () => {
     const unfinishedTasks = tasks.filter((task) => task.status === false)
     const completedTasks = tasks.filter((task) => task.status === true)
 
-    const handleChangePage = (_, newPage) => {
-        setPage(newPage)
-    }
+    const handleChangePage = (_, newPage) => setPage(newPage)
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10))
@@ -126,31 +145,27 @@ const Task = () => {
     return (
         <Box sx={{ bgcolor: theme.palette.background.default, minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
             <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
-                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, px: 3 }}>
+                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, px: 3 }}>
                     <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
                         {user?.name}'s tasks
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Button variant="outlined">All ({tasks.length})</Button>
                         <IconButton><SearchIcon /></IconButton>
-                        <IconButton><MoreVertIcon /></IconButton>
                         <IconButton onClick={() => setShowDialog(true)}><AddIcon /></IconButton>
                         {viewMode === 'list' ? (
-                            <IconButton onClick={() => setViewMode('table')}>
-                                <BackupTableIcon />
-                            </IconButton>
+                            <IconButton onClick={() => setViewMode('table')}><BackupTableIcon /></IconButton>
                         ) : (
-                            <IconButton onClick={() => setViewMode('list')}>
-                                <FormatListBulletedIcon />
-                            </IconButton>
+                            <IconButton onClick={() => setViewMode('list')}><FormatListBulletedIcon /></IconButton>
                         )}
                     </Box>
                 </Toolbar>
 
                 {viewMode === 'list' ? (
-                    <Card sx={{ borderRadius: 2, boxShadow: theme.shadows[1] }}>
+                    <Card>
                         <CardContent sx={{ p: 0 }}>
-                            <Box sx={{ display: 'flex', px: 2, py: 1.5, borderBottom: `1px solid ${theme.palette.divider}`, bgcolor: theme.palette.action.hover, fontWeight: 'bold' }}>
+                            {/* Header Row */}
+                            <Box sx={{ display: 'flex', px: 2, py: 1.5, borderBottom: `1px solid ${theme.palette.divider}`, bgcolor: theme.palette.action.hover }}>
                                 <Box sx={{ flexBasis: '20%' }}>Task name</Box>
                                 <Box sx={{ flexBasis: '30%' }}>Description</Box>
                                 <Box sx={{ flexBasis: '15%' }}>Priority</Box>
@@ -159,8 +174,9 @@ const Task = () => {
                                 <Box sx={{ flexBasis: '10%' }}>Actions</Box>
                             </Box>
 
+                            {/* Unfinished tasks */}
                             <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, cursor: 'pointer' }} onClick={() => setExpandedTasks(!expandedTasks)}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => setExpandedTasks(!expandedTasks)}>
                                     {expandedTasks ? <ExpandMoreIcon /> : <ChevronRightIcon />}
                                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold', ml: 1 }}>
                                         Unfinished tasks ({unfinishedTasks.length})
@@ -173,6 +189,8 @@ const Task = () => {
                                                 key={task.id}
                                                 task={task}
                                                 onToggleStatus={toggleTaskCompletion}
+                                                onEdit={handleEditClick}
+                                                onDeleteTask={() => handleConfirmDelete(task.id)}
                                                 onRefresh={handleListTask}
                                             />
                                         ))}
@@ -183,6 +201,7 @@ const Task = () => {
                                 </Collapse>
                             </Box>
 
+                            {/* Completed tasks */}
                             <Box sx={{ p: 2 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => setExpandedCompleted(!expandedCompleted)}>
                                     {expandedCompleted ? <ExpandMoreIcon /> : <ChevronRightIcon />}
@@ -222,28 +241,13 @@ const Task = () => {
                                         <TableCell align="center">Actions</TableCell>
                                     </TableRow>
                                 </TableHead>
-
-
                                 <TableBody>
                                     {paginatedTasks.map((task) => (
                                         <TableRow key={task.id}>
                                             <TableCell>
-                                                <Box
-                                                    sx={{
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                    }}
-                                                >
-                                                    <IconButton
-                                                        onClick={() => toggleTaskCompletion(task.id)}
-                                                        size="small"
-                                                        sx={{ mr: 1 }}
-                                                    >
-                                                        {task.status ? (
-                                                            <CheckBoxIcon color="success" />
-                                                        ) : (
-                                                            <CheckBoxOutlineBlankIcon />
-                                                        )}
+                                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                    <IconButton onClick={() => toggleTaskCompletion(task.id)} size="small" sx={{ mr: 1 }}>
+                                                        {task.status ? <CheckBoxIcon color="success" /> : <CheckBoxOutlineBlankIcon />}
                                                     </IconButton>
                                                     <Typography>{task.name}</Typography>
                                                 </Box>
@@ -252,18 +256,12 @@ const Task = () => {
                                             <TableCell>
                                                 <Button
                                                     sx={{
-                                                        bgcolor:
-                                                            task.priority === 'High'
-                                                                ? theme.palette.error.light
-                                                                : task.priority === 'Medium'
-                                                                    ? theme.palette.warning.light
-                                                                    : theme.palette.info.light,
-                                                        color:
-                                                            task.priority === 'High'
-                                                                ? theme.palette.error.contrastText
-                                                                : task.priority === 'Medium'
-                                                                    ? theme.palette.warning.contrastText
-                                                                    : theme.palette.info.contrastText,
+                                                        bgcolor: task.priority === 'High'
+                                                            ? theme.palette.error.light
+                                                            : task.priority === 'Medium'
+                                                                ? theme.palette.warning.light
+                                                                : theme.palette.info.light,
+                                                        color: '#fff',
                                                         textTransform: 'none',
                                                         borderRadius: 1,
                                                         px: 1,
@@ -274,37 +272,15 @@ const Task = () => {
                                                     {task.priority}
                                                 </Button>
                                             </TableCell>
-                                            <TableCell>
-                                                <Box>
-                                                    <Typography>
-                                                        {dayjs(task.start_date).format('DD/MM/YYYY')}
-                                                    </Typography>
-                                                </Box>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Box>
-                                                    <Typography>
-                                                        {dayjs(task.due_date).format('DD/MM/YYYY')}
-                                                    </Typography>
-                                                </Box>
-                                            </TableCell>
+                                            <TableCell>{dayjs(task.start_date).format('DD/MM/YYYY')}</TableCell>
+                                            <TableCell>{dayjs(task.due_date).format('DD/MM/YYYY')}</TableCell>
                                             <TableCell align="center">
-                                                <Button size="small" onClick={() => onEditTask(task)}>
-                                                    Update
-                                                </Button>
-                                                <Button
-                                                    size="small"
-                                                    color="error"
-                                                    onClick={() => onDeleteTask(task.id)}
-                                                >
-                                                    Delete
-                                                </Button>
+                                                <Button size="small" onClick={() => handleEditClick(task)}>Update</Button>
+                                                <Button size="small" color="error" onClick={() => handleConfirmDelete(task.id)}>Delete</Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
-
-
                             </Table>
                         </TableContainer>
                         <TablePagination
@@ -320,13 +296,30 @@ const Task = () => {
                 )}
             </Box>
 
+            {/* Alerts */}
             <Snackbar open={Boolean(alert?.mssg)} autoHideDuration={3000} onClose={() => setAlert({})} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
                 <Alert onClose={() => setAlert({})} severity={alert.type || 'info'} sx={{ width: '100%' }} variant="filled">
                     {alert.mssg}
                 </Alert>
             </Snackbar>
 
-            <AddTask open={showDialog} onClose={() => { setShowDialog(false) }} onCreate={handleCreateTask} selectedDate={null} />
+            {/* Dialogs */}
+            <AddTask open={showDialog} onClose={() => setShowDialog(false)} onCreate={handleCreateTask} selectedDate={null} />
+            <UpdateTask open={showEditDialog} editTask={editingTask} onClose={() => setShowEditDialog(false)} onUpdate={handleUpdateTask} />
+
+            {/* Confirm Delete Dialog */}
+            <Dialog open={confirmDelete.open} onClose={() => setConfirmDelete({ open: false, taskId: null })}>
+                <DialogTitle>Confirm Delete</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to delete this task? This action cannot be undone.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setConfirmDelete({ open: false, taskId: null })}>Cancel</Button>
+                    <Button onClick={handleDeleteTask} color="error" variant="contained">Delete</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     )
 }

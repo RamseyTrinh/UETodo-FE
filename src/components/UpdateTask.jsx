@@ -13,6 +13,8 @@ import {
     Typography,
     useTheme,
 } from '@mui/material'
+import dayjs from 'dayjs'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
 const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
     const theme = useTheme()
@@ -24,13 +26,13 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
 
     const [error, setError] = useState(null)
     const [task, setTask] = useState({
-        id: editTask?.id || null,
-        name: editTask?.name || '',
-        description: editTask?.description || '',
-        priority: editTask?.priority || 'Low',
-        start_date: editTask?.start_date || new Date().toISOString().split('T')[0],
-        due_date: editTask?.due_date || null,
-        user_id: editTask?.user_id || null,
+        id: null,
+        name: '',
+        description: '',
+        priority: 'Low',
+        start_date: '',
+        due_date: '',
+        user_id: null,
     })
 
     useEffect(() => {
@@ -44,6 +46,16 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
         }
     }, [])
 
+    useEffect(() => {
+        if (editTask) {
+            setTask({
+                ...editTask,
+                start_date: editTask.start_date ? dayjs(editTask.start_date).format('YYYY-MM-DD') : '',
+                due_date: editTask.due_date ? dayjs(editTask.due_date).format('YYYY-MM-DD') : '',
+            })
+        }
+    }, [editTask])
+
     const handleChange = (field) => (e) => {
         setTask((prev) => ({
             ...prev,
@@ -51,20 +63,18 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
         }))
     }
 
-    const handleDueDateChange = (e) => {
-        const value = e.target.value
-        const selectedDate = new Date(value)
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-
-        if (selectedDate < today) {
-            setError('Please select a valid due date')
-            return
+    const handleDateChange = (field) => (date) => {
+        const formatted = date ? date.format('YYYY-MM-DD') : ''
+        if (field === 'due_date') {
+            const today = dayjs().startOf('day')
+            if (date && date.isBefore(today)) {
+                setError('Please select a valid due date')
+                return
+            }
         }
-
         setTask((prev) => ({
             ...prev,
-            due_date: value,
+            [field]: formatted,
         }))
     }
 
@@ -81,10 +91,6 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
             setError('Due date is required')
             return
         }
-        if (!task.user_id) {
-            setError('User ID is missing')
-            return
-        }
 
         onUpdate(task)
         onClose()
@@ -93,7 +99,14 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
     return (
         <>
             <Dialog open={open} onClose={onClose}>
-                <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: theme.palette.primary.main }}>
+                <DialogTitle
+                    sx={{
+                        textAlign: 'center',
+                        fontSize: '1.5rem',
+                        fontWeight: 'bold',
+                        color: theme.palette.primary.main,
+                    }}
+                >
                     Update Task
                 </DialogTitle>
                 <DialogContent>
@@ -101,7 +114,6 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
                         autoFocus
                         margin="dense"
                         label="Name"
-                        type="text"
                         fullWidth
                         value={task.name}
                         onChange={handleChange('name')}
@@ -109,7 +121,6 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
                     <TextField
                         margin="dense"
                         label="Description"
-                        type="text"
                         fullWidth
                         multiline
                         rows={3}
@@ -126,7 +137,7 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
                         sx={{ mb: 2 }}
                         SelectProps={{
                             renderValue: (selected) => (
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <Typography>{selected}</Typography>
                                     <Box
                                         sx={{
@@ -149,7 +160,7 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: 1,
-                                    color: (theme) => theme.palette[priorityColors[option].split('.')[0]][priorityColors[option].split('.')[1]],
+                                    color: theme.palette[priorityColors[option].split('.')[0]][priorityColors[option].split('.')[1]],
                                 }}
                             >
                                 <Box
@@ -164,23 +175,34 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
                             </MenuItem>
                         ))}
                     </TextField>
-                    <TextField
-                        margin="dense"
+
+                    <DatePicker
                         label="Start Date"
-                        type="date"
-                        fullWidth
-                        value={task.start_date}
-                        onChange={handleChange('start_date')}
-                        InputLabelProps={{ shrink: true }}
+                        value={task.start_date ? dayjs(task.start_date) : null}
+                        onChange={handleDateChange('start_date')}
+                        format="DD/MM/YYYY"
+                        slotProps={{
+                            textField: {
+                                fullWidth: true,
+                                margin: 'dense',
+                                required: true,
+                            }
+                        }}
                     />
-                    <TextField
-                        margin="dense"
+
+                    <DatePicker
                         label="Due Date"
-                        type="date"
-                        fullWidth
-                        value={task.due_date}
-                        onChange={handleDueDateChange}
-                        InputLabelProps={{ shrink: true }}
+                        value={task.due_date ? dayjs(task.due_date) : null}
+                        onChange={handleDateChange('due_date')}
+                        format="DD/MM/YYYY"
+                        slotProps={{
+                            textField: {
+                                fullWidth: true,
+                                margin: 'dense',
+                                required: true,
+                            }
+                        }}
+                        sx={{ mt: 2 }}
                     />
                 </DialogContent>
                 <DialogActions>

@@ -11,23 +11,26 @@ import {
     Alert,
     Box,
     Typography,
-    useTheme
+    useTheme,
 } from '@mui/material'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import dayjs from 'dayjs'
 
 const priorityColors = {
-    High: 'error.main',      
-    Medium: 'warning.main',  
-    Low: 'info.main',       
+    High: 'error.main',
+    Medium: 'warning.main',
+    Low: 'info.main',
 }
 
 const AddTask = ({ open, onClose, onCreate, selectedDate }) => {
     const theme = useTheme()
     const [error, setError] = useState(null)
+
     const [task, setTask] = useState({
         name: '',
         description: '',
         priority: 'High',
-        start_date: null,
+        start_date: selectedDate || null,
         due_date: null,
         user_id: null,
     })
@@ -36,16 +39,10 @@ const AddTask = ({ open, onClose, onCreate, selectedDate }) => {
         const userInfo = JSON.parse(localStorage.getItem('INFO'))
         const userId = parseInt(userInfo?.user?.id)
         if (userId) {
-            setTask((prev) => ({
-                ...prev,
-                user_id: userId,
-            }))
+            setTask(prev => ({ ...prev, user_id: userId }))
         }
         if (selectedDate) {
-            setTask((prev) => ({
-                ...prev,
-                start_date: selectedDate,
-            }))
+            setTask(prev => ({ ...prev, start_date: selectedDate }))
         }
     }, [selectedDate])
 
@@ -56,37 +53,18 @@ const AddTask = ({ open, onClose, onCreate, selectedDate }) => {
         }))
     }
 
-    const handleStartDateChange = (e) => {
-        const value = e.target.value
-
-        if (selectedDate) {
-            if (new Date(value) !== new Date(selectedDate)) {
+    const handleDateChange = (field) => (date) => {
+        const value = date ? dayjs(date).format('YYYY-MM-DD') : ''
+        if (field === 'start_date' && selectedDate) {
+            const formatted = dayjs(selectedDate).format('YYYY-MM-DD')
+            if (value !== formatted) {
                 setError('Cannot change start date when a date is selected')
                 return
             }
-        } else {
-            setTask((prev) => ({
-                ...prev,
-                start_date: value,
-            }))
         }
-
-    }
-
-    const handleDueDateChange = (e) => {
-        const value = e.target.value
-        const selectedDate = new Date(value)
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-
-        if (selectedDate < today) {
-            setError('Please select a valid due date')
-            return
-        }
-
         setTask((prev) => ({
             ...prev,
-            due_date: value,
+            [field]: value,
         }))
     }
 
@@ -96,8 +74,9 @@ const AddTask = ({ open, onClose, onCreate, selectedDate }) => {
             name: '',
             description: '',
             priority: 'High',
-            start_date: null,
+            start_date: selectedDate || null,
             due_date: null,
+            user_id: task.user_id,
         })
         onClose()
     }
@@ -111,16 +90,15 @@ const AddTask = ({ open, onClose, onCreate, selectedDate }) => {
             setError('Due date is required')
             return
         }
-
         if (new Date(task.start_date) > new Date(task.due_date)) {
             setError('Start date cannot be after due date')
             return
         }
-
         if (!task.user_id) {
             setError('User ID is missing')
             return
         }
+
         onCreate(task)
         handleOnClose()
     }
@@ -128,22 +106,25 @@ const AddTask = ({ open, onClose, onCreate, selectedDate }) => {
     return (
         <>
             <Dialog open={open} onClose={handleOnClose} maxWidth="sm" fullWidth>
-                <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: theme.palette.primary.main }}>Add New Task</DialogTitle>
+                <DialogTitle sx={{
+                    textAlign: 'center',
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold',
+                    color: theme.palette.primary.main,
+                }}>
+                    Add New Task
+                </DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
-                        margin="dense"
                         label="Name"
-                        type="text"
                         fullWidth
                         value={task.name}
                         onChange={handleChange('name')}
-                        sx={{ mb: 2 }}
+                        sx={{ mb: 2, mt: 1 }}
                     />
                     <TextField
-                        margin="dense"
                         label="Description"
-                        type="text"
                         fullWidth
                         multiline
                         rows={3}
@@ -152,7 +133,6 @@ const AddTask = ({ open, onClose, onCreate, selectedDate }) => {
                         sx={{ mb: 2 }}
                     />
                     <TextField
-                        margin="dense"
                         label="Priority"
                         select
                         fullWidth
@@ -184,7 +164,8 @@ const AddTask = ({ open, onClose, onCreate, selectedDate }) => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: 1,
-                                    color: (theme) => theme.palette[priorityColors[option].split('.')[0]][priorityColors[option].split('.')[1]],
+                                    color: (theme) =>
+                                        theme.palette[priorityColors[option].split('.')[0]][priorityColors[option].split('.')[1]],
                                 }}
                             >
                                 <Box
@@ -200,25 +181,23 @@ const AddTask = ({ open, onClose, onCreate, selectedDate }) => {
                         ))}
                     </TextField>
 
-                    <TextField
-                        margin="dense"
+                    <DatePicker
                         label="Start Date"
-                        type="date"
-                        fullWidth
-                        value={task.start_date || selectedDate || ''}
-                        onChange={handleStartDateChange}
-                        InputLabelProps={{ shrink: true }}
-                        sx={{ mb: 2 }}
+                        value={task.start_date ? dayjs(task.start_date) : null}
+                        onChange={handleDateChange('start_date')}
+                        format="DD/MM/YYYY"
+                        slotProps={{
+                            textField: { fullWidth: true, sx: { mb: 2 } }
+                        }}
                     />
-                    <TextField
-                        margin="dense"
+                    <DatePicker
                         label="Due Date"
-                        type="date"
-                        fullWidth
-                        value={task.due_date}
-                        onChange={handleDueDateChange}
-                        InputLabelProps={{ shrink: true }}
-                        sx={{ mb: 1 }}
+                        value={task.due_date ? dayjs(task.due_date) : null}
+                        onChange={handleDateChange('due_date')}
+                        format="DD/MM/YYYY"
+                        slotProps={{
+                            textField: { fullWidth: true }
+                        }}
                     />
                 </DialogContent>
                 <DialogActions sx={{ px: 3, pb: 3 }}>
