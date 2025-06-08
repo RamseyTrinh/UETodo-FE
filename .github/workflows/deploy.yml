@@ -22,7 +22,7 @@ jobs:
             git fetch --all
             git reset --hard origin/main
 
-            npm install --force
-            npm run build
-            
+            /home/hoangkmhd190/.nvm/versions/node/v16.16.0/bin/npm install --force
+            /home/hoangkmhd190/.nvm/versions/node/v16.16.0/bin/npm run build
+
 
