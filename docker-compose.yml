@@ -7,4 +7,4 @@ services:
     restart: on-failure
     
     volumes:
-      - /home/hoangkmhd190/uetodo/UETodo-FE/dist:/app/UETodo-FE/dist
+      - /home/hoangkmhd190/uetodo/UETodo-FE/dist:/app/dist
