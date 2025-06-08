@@ -21,12 +21,6 @@ jobs:
             cd ${{secrets.PROJECT_DIR}}
             git fetch --all
             git reset --hard origin/main
-            
-            docker build -t uetodo-fe .
-
-            CONTAINER_ID=$(docker create uetodo-fe)
-
-            docker cp $CONTAINER_ID:/app/dist /home/hoangkmhd190/uetodo/UETodo-FE/
-
-            docker rm $CONTAINER_ID
+            docker-compose down
+            docker-compose up -d --build
 
