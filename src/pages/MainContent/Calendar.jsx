@@ -86,7 +86,7 @@ const Calendar = () => {
 
   return (
     <Box sx={{ px: { xs: 1, sm: 3 }, py: 2 }}>
-      <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold', color: theme.palette.primary.main }}>
+      <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold' }}>
         Calendar
       </Typography>
       <Paper
