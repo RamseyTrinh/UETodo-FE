@@ -10,6 +10,7 @@ import {
   Alert,
   Snackbar,
   useMediaQuery,
+  Typography,
 } from '@mui/material'
 
 import { createTask, getTasksByUserId } from '@/services/task'
@@ -85,6 +86,9 @@ const Calendar = () => {
 
   return (
     <Box sx={{ px: { xs: 1, sm: 3 }, py: 2 }}>
+      <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold', color: theme.palette.primary.main }}>
+        Calendar
+      </Typography>
       <Paper
         elevation={3}
         sx={{
@@ -143,10 +147,10 @@ const Calendar = () => {
                     color: isToday
                       ? theme.palette.success.contrastText
                       : day === 0
-                      ? theme.palette.error.main
-                      : day === 6
-                      ? theme.palette.success.main
-                      : theme.palette.text.primary,
+                        ? theme.palette.error.main
+                        : day === 6
+                          ? theme.palette.success.main
+                          : theme.palette.text.primary,
                   }}
                 >
                   {date.getDate()}

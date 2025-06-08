@@ -28,7 +28,8 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
         name: editTask?.name || '',
         description: editTask?.description || '',
         priority: editTask?.priority || 'Low',
-        due_date: editTask?.due_date || '',
+        start_date: editTask?.start_date || new Date().toISOString().split('T')[0],
+        due_date: editTask?.due_date || null,
         user_id: editTask?.user_id || null,
     })
 
@@ -163,6 +164,15 @@ const UpdateTask = ({ editTask, open, onClose, onUpdate }) => {
                             </MenuItem>
                         ))}
                     </TextField>
+                    <TextField
+                        margin="dense"
+                        label="Start Date"
+                        type="date"
+                        fullWidth
+                        value={task.start_date}
+                        onChange={handleChange('start_date')}
+                        InputLabelProps={{ shrink: true }}
+                    />
                     <TextField
                         margin="dense"
                         label="Due Date"
