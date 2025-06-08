@@ -5,26 +5,30 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  deployment:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        name: Checkout code
 
       - name: Setup Node.js 18
         uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      - name: SSH and deploy
-        uses: appleboy/ssh-action@master
+      - uses: appleboy/ssh-action@v1.2.1
+        name: Deploy to server
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{secrets.SERVER_HOST}}
+          username: ${{secrets.SERVER_USERNAME}}
+          key: ${{secrets.SSH_PRIVATE_KEY}}
           script: |
+            cd ${{secrets.PROJECT_DIR}}
+            git fetch --all
+            git reset --hard origin/main
             export NVM_DIR="$HOME/.nvm"
             source $NVM_DIR/nvm.sh
+
             nvm install 18
             nvm use 18
 
@@ -34,3 +38,6 @@ jobs:
 
             npm install --force
             npm run build
+
+            
+
