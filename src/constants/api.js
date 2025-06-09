@@ -12,6 +12,7 @@ export const USER_API = {
     UPDATE_USER: (userId) => `/user/${userId}`,
     CHANGE_PASSWORD: (userId) => `/user/${userId}/password`,
     UPDATE_NEW_PASSWORD: '/user/update-new-password',
+    DELETE_USER: (userId) => `/user/${userId}`,
 }
 
 export const TASK_API = {

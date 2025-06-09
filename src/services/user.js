@@ -16,3 +16,7 @@ export const changePassword = async (userId, data) => {
 export const updateNewPassword = async (data) => {
     return (await http.post(USER_API.UPDATE_NEW_PASSWORD, data))
 }
+
+export const deleteUser = async (userId) => {
+    return (await http.delete(USER_API.DELETE_USER(userId)))
+}
