@@ -181,6 +181,8 @@ const AboutUs = () => {
                                 </Typography>
                                 <Typography variant="body1">
                                     You can find the source code for this project on GitHub:&nbsp;
+                                    <br />
+                                    FE:&nbsp;
                                     <a
                                         href="https://github.com/RamseyTrinh/UETodo-FE"
                                         target="_blank"
@@ -189,6 +191,8 @@ const AboutUs = () => {
                                     >
                                         https://github.com/RamseyTrinh/UETodo-FE
                                     </a>
+                                    <br />
+                                    BE:&nbsp;
                                     <a
                                         href="https://github.com/RamseyTrinh/UETodo-BE-Flask"
                                         target="_blank"
