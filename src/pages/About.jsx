@@ -182,12 +182,20 @@ const AboutUs = () => {
                                 <Typography variant="body1">
                                     You can find the source code for this project on GitHub:&nbsp;
                                     <a
-                                        href="https://github.com/RamseyTrinh"
+                                        href="https://github.com/RamseyTrinh/UETodo-FE"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         style={{ color: theme.palette.primary.main, textDecoration: 'none', fontWeight: 'bold' }}
                                     >
-                                        https://github.com/RamseyTrinh
+                                        https://github.com/RamseyTrinh/UETodo-FE
+                                    </a>
+                                    <a
+                                        href="https://github.com/RamseyTrinh/UETodo-BE-Flask"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ color: theme.palette.primary.main, textDecoration: 'none', fontWeight: 'bold' }}
+                                    >
+                                        https://github.com/RamseyTrinh/UETodo-BE-Flask
                                     </a>
                                 </Typography>
                             </Card>
