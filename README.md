@@ -32,15 +32,7 @@ React JS Advanced Folder Structure
     |     └── videos
     ├── components
     ├── constants
-    ├── db
     ├── layouts
-    |     ├── Header
-    |     |     ├── index.jsx
-    |     ├── Breadcrumbs.jsx
-    |     |     ├── index.jsx
-    |     └── Footer.jsx
-    |           ├── index.jsx
-    |     └── MainLayout.jsx
     ├── pages
     ├── routers
     |     ├── path.js
@@ -72,49 +64,6 @@ React JS Advanced Folder Structure
 
 Public mainly contain root file **`index.html`** which help to run react project.
 
-### Assests
-
-In Assets folder you can put following things.
-
-- Images
-- Video
-- Icons
-- CSS
-
-### Components
-
-Component will have all the components which are reuseable anywhere in website. Like - Button - Cards - DropDownBtn - inputs - Modal - Popups - Toast - Tooltip - Text/Heading/Title - Skeleton - Spiner/Loader
-
-### Constants
-
-Constants folder have **Tokens,** logins, and those details which we don't want to share with public. Like **Env** files are used to store sensitive credentials such as **API keys.**
-An environment variable supports storing the API link at one location so that we do not need to change the Link in each file manually.
-
-```javascript
-const API_BASE_URL = 'https://api.example.com';
-const MAX_ITEMS_PER_PAGE = 10;
-```
-
-### db
-
-Here we provide JSON Formate of data in frontend in React APP.
-
-- products data
-- users data
-
-### Helpers
-
-Helpers used to store utility functions and modules that provide various helper functionalities. These functions are usually small, reusable, and not directly tied to the main business logic of your application.
-
-- Array to Object
-- Object to Array
-- Date Formatting
-- Number Formatting
-- Validation
-- Api Request
-
-[Helper Functions Details](https://chat.openai.com/share/32e7459b-dd5a-495a-a418-db2453361370)
-
 ### Layout
 
 This is just a special folder for **placing any layout based components.**
@@ -133,54 +82,6 @@ Pages will have all the pages which we will use in website.
 
 Router will have all the Routes in website. Where we are going and where we want to go.
 
-### Services
-
-In Services we put configuration file, like when you are using google firebase then your firebase config file will be in services folder.
-
-The **"services"** folder is often used to contain code related to making **\*`API`** requests and managing data from external sources. This folder helps separate the concerns of your application by isolating data fetching and manipulation logic from the components that render the UI.
-
-```javascript
-// services/auth.js
-export const register = async (payload) => {
-    return await http.post(AUTH_API.REGISTER, payload);
-};
-```
-
-### Store
-"store" folder in a React application typically refers to a directory where you manage your application's state using state management libraries like 
-- Redux 
-- Redux Toolkit
-- Zustand
-- Context Api
-- Mobx
-
-```javascript
-|-- store/
-|   |-- actions.js        // Redux action creators
-|   |-- reducers.js       // Redux reducers
-|   |-- store.js          // Redux store configuration
-```
-
-### Utils
-
-**`Utils`** folder is a common convention in many software projects, including React applications, for storing utility functions and helper modules that provide general-purpose functionality across different parts of the application. 
-- constants
-- helpers
-- hooks
-
-Example: 
-```javascript
-// utils/stringUtils.js
-export function capitalizeFirstLetter(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-// utils/dateUtils.js
-export function formatDate(date) {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(date).toLocaleDateString(undefined, options);
-}
-```
 
 ### .env.development
 
@@ -256,49 +157,3 @@ Inside the vite.config.js file, you export an object containing the configuratio
 
 - JavaScript Format:
 The vite.config.js file is written in JavaScript, and it's named vite.config.js. It should be placed in the root directory of your Vite project.
-
-```javascript
-// vite.config.js
-export default {
-  server: {
-    port: 3000
-  },
-  build: {
-    minify: true
-  },
-  plugins: [/* your plugins here */]
-};
-```
-
-@import 
-```javascript
-export default defineConfig({
-  resolve: {
-    alias: {
-      '@': '/src',
-      '@page': '/src/page'
-    }
-  },
-  plugins: [react()],
-})
-```
-
-**2nd Method**
-
-```javascript
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { resolve } from 'path';
-
-const alias = {
-  // eslint-disable-next-line no-undef
-  '@': resolve(__dirname, './src'),
-};
-
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias,
-  },
-})
-```

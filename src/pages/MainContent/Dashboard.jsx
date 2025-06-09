@@ -194,7 +194,7 @@ const Dashboard = () => {
                                 variant="h5"
                                 sx={{ fontWeight: 'bold', color: theme.palette.primary.main }}
                             >
-                                {dashboardTasks.total_task || 15}
+                                {dashboardTasks.total_task || 0}
                             </Typography>
                         </Box>
                     </Paper>
