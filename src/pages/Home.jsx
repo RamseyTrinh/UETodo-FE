@@ -85,9 +85,9 @@ const Home = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <Typography variant="h3" fontWeight="bold" gutterBottom>
+          {/* <Typography variant="h3" fontWeight="bold" gutterBottom>
             Simplify Your Workflow with UETodoApp
-          </Typography>
+          </Typography> */}
           <Typography variant="h6" color="text.secondary" mb={4}>
             The ultimate task management tool built for students and professionals alike.
           </Typography>
