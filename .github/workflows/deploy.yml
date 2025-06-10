@@ -15,10 +15,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          script: |
-            npm install --force
-            npm run build
-            scp -r ./dist/* ${{secrets.SERVER_USERNAME}}@${{secrets.SERVER_HOST}}:${{secrets.PROJECT_DIR}}
+        
+      - name: Build project
+        run: |
+          npm install --force
+          npm run build
+          scp -r ./dist/* ${{secrets.SERVER_USERNAME}}@${{secrets.SERVER_HOST}}:${{secrets.PROJECT_DIR}}
 
       # - uses: appleboy/ssh-action@v1.2.1
       #   name: Deploy to server
