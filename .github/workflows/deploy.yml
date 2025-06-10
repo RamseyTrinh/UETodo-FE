@@ -16,6 +16,13 @@ jobs:
         with:
           node-version: '18'
         
+      - name: Install dependencies and Build project
+        run: |
+          npm install --force
+          npm run build
+        env:
+          VITE_APP_ROOT_API: https://api.uetodo.site/api/v1
+
       - name: Deploy built files to server
         uses: appleboy/scp-action@v0.1.7
         with:
